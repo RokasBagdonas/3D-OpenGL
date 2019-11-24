@@ -1,0 +1,24 @@
+# Third year Computer Graphics university assignment
+
+The task is to use OpenGL for redering and animating a snowman.
+
+## Hierarchical model of the snowman
+
+### Task 1 - snowman's body
+
+Create a snowman from three spheres as its body, 3 buttons, nose, mounth and eyes.
+
+### Task 2 - snowman's hat
+
+Model a fedora or a cowboy's hat.
+
+### Task 3 - texture map the snowman
+
+Apply snow and mud textures onto the snowman and a leather onto the hat
+
+
+## Metal object near the snowman
+
+The object has to have diffuse and a specular maps applied to it. 
+
+
