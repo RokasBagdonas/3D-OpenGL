@@ -1,6 +1,10 @@
 import gmaths.*;
 
 import java.nio.*;
+
+import javax.naming.NameAlreadyBoundException;
+import javax.xml.crypto.dsig.Transform;
+
 import com.jogamp.common.nio.*;
 import com.jogamp.opengl.*;
 import com.jogamp.opengl.util.*;
@@ -65,7 +69,7 @@ public class M01_GLEventListener implements GLEventListener {
    
   private Camera camera;
   private Mat4 perspective; // ?
-  private Model floor, cube, sphere;
+  private Model floor, cube, sphere, button;
   private Light light;
   private SGNode sceneGraphRoot;
 
@@ -115,6 +119,9 @@ public class M01_GLEventListener implements GLEventListener {
     // modelMatrix = Mat4.multiply(Mat4Transform.translate(0,4,0), modelMatrix);
     
     sphere = new Model(gl, camera, light, shader, material, modelMatrix, mesh, textureId5, textureId4);
+
+    button = new Model(gl, camera, light, shader, material, modelMatrix, mesh, textureId3, textureId4);
+
     
     // no texture version
     // sphere = new Model(gl, camera, light, shader, material, modelMatrix, mesh); 
@@ -136,6 +143,32 @@ public class M01_GLEventListener implements GLEventListener {
 
       ModelNode headShape = new ModelNode("head (sphere)", sphere);
 
+    //1. - adjust the size. Move to the bottom spot. Translate the 2nd button and third button. translate third button
+    NameNode bottomButton = new NameNode("snowman's bottom button");
+    float scale = 0.3f;
+      m = Mat4Transform.scale(scale,scale,scale);
+      m = Mat4.multiply(m, Mat4Transform.translate(0.0f,4f,6f));
+      TransformNode initialButtonTransfom = new TransformNode("scale(1.1f, 1.1f, 1.1f); translate(0.0f,1.8f,0.9f);", m);
+
+      ModelNode bottomButtonShape = new ModelNode("bottom button (sphere)", button);
+
+    NameNode middleButton = new NameNode("snowman's middle button");
+      Mat4  mMiddleButton = Mat4Transform.translate(0.0f, 2f, 0.0f);
+      TransformNode middleButtonTransform = new TransformNode("translate(0.0f, 0.3f, 0.0f);", mMiddleButton);
+      
+      ModelNode middleButtonShape = new ModelNode("middle button (sphere)", button);
+    
+    NameNode topButton = new NameNode("snowman's top button");
+      Mat4 mTopButton = Mat4Transform.translate(0.0f, 2f, 0.0f);
+      TransformNode topButtonTransform = new TransformNode("translate(0.0f, 0.3f, 0.0f);", mTopButton);
+
+      ModelNode topButtonShape = new ModelNode("top button (sphere)", button);
+      
+
+    NameNode buttons = new NameNode("snowman's buttons");
+
+
+
  
     sceneGraphRoot.addChild(base);
       base.addChild(baseTransform);
@@ -143,6 +176,22 @@ public class M01_GLEventListener implements GLEventListener {
       base.addChild(head);
         head.addChild(headTransform);
           headTransform.addChild(headShape);
+      base.addChild(buttons);
+        buttons.addChild(initialButtonTransfom);
+          initialButtonTransfom.addChild(bottomButton);
+            bottomButton.addChild(bottomButtonShape);
+          initialButtonTransfom.addChild(middleButtonTransform);
+            middleButtonTransform.addChild(middleButton);
+              middleButton.addChild(middleButtonShape);
+            middleButtonTransform.addChild(topButtonTransform);
+              topButtonTransform.addChild(topButton);
+                topButton.addChild(topButtonShape);
+
+
+
+        
+
+    
 
     
 

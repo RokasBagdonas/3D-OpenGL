@@ -6,7 +6,7 @@ The task is to use OpenGL for redering and animating a snowman.
 
 ### Task 1 - snowman's body
 
-Create a snowman from three spheres as its body, 3 buttons, nose, mounth and eyes.
+Create a snowman from two spheres: head and body; 3 buttons; nose; mounth; eyes.
 
 ### Task 2 - snowman's hat
 
