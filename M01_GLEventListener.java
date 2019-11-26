@@ -200,6 +200,12 @@ public class M01_GLEventListener implements GLEventListener {
       TransformNode noseTransform = new TransformNode("scale(0.3f, 0.3f, 0.5f); translate(0.0f, 4f, 1f);", m);
       ModelNode noseShape = new ModelNode("nose (sphere - nose)", button);
 
+    NameNode mouth = new NameNode("mouth");
+      m = Mat4Transform.scale(0.6f, 0.2f, 0.2f);
+      m = Mat4.multiply(Mat4Transform.translate(0.0f, 3.5f, 1.2f), m);
+
+      TransformNode mouthTransform = new TransformNode("scale(0.3f, 0.3f, 0.5f); translate(0.0f, 4f, 1f);", m);
+      ModelNode mouthShape = new ModelNode("mouth (sphere - mouth)", button);
 
 
     
@@ -222,6 +228,10 @@ public class M01_GLEventListener implements GLEventListener {
         head.addChild(nose);
           nose.addChild(noseTransform);
             noseTransform.addChild(noseShape);
+
+        head.addChild(mouth);
+          mouth.addChild(mouthTransform);
+            mouthTransform.addChild(mouthShape);
 
       base.addChild(buttons);
       buttons.addChild(initialButtonTransfom);
