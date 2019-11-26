@@ -10,27 +10,28 @@ import com.jogamp.opengl.*;
 import com.jogamp.opengl.util.*;
 import com.jogamp.opengl.util.awt.*;
 import com.jogamp.opengl.util.glsl.*;
-  
+
+
 public class M01_GLEventListener implements GLEventListener {
-  
+
   private static final boolean DISPLAY_SHADERS = false;
-    
+
   public M01_GLEventListener(Camera camera) {
     this.camera = camera;
     this.camera.setPosition(new Vec3(4f,6f,15f));
     this.camera.setTarget(new Vec3(0f,5f,0f));
   }
-  
+
   // ***************************************************
   /*
    * METHODS DEFINED BY GLEventListener
    */
 
   /* Initialisation */
-  public void init(GLAutoDrawable drawable) {   
+  public void init(GLAutoDrawable drawable) {
     GL3 gl = drawable.getGL().getGL3();
     System.err.println("Chosen GLCapabilities: " + drawable.getChosenGLCapabilities());
-    gl.glClearColor(0.0f, 0.0f, 0.0f, 1.0f); 
+    gl.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     gl.glClearDepth(1.0f);
     gl.glEnable(GL.GL_DEPTH_TEST);
     gl.glDepthFunc(GL.GL_LESS);
@@ -40,7 +41,7 @@ public class M01_GLEventListener implements GLEventListener {
     initialise(gl);
     startTime = getSeconds();
   }
-  
+
   /* Called to indicate the drawing surface has been moved and/or resized  */
   public void reshape(GLAutoDrawable drawable, int x, int y, int width, int height) {
     GL3 gl = drawable.getGL().getGL3();
@@ -66,7 +67,7 @@ public class M01_GLEventListener implements GLEventListener {
    * Now define all the methods to handle the scene.
    * This will be added to in later examples.
    */
-   
+
   private Camera camera;
   private Mat4 perspective; // ?
   private Model floor, cube, sphere, button;
@@ -80,7 +81,7 @@ public class M01_GLEventListener implements GLEventListener {
     sphere.dispose(gl);
     light.dispose(gl);
   }
-  
+
   public void initialise(GL3 gl) {
     createRandomNumbers();
     //Load textures
@@ -93,58 +94,61 @@ public class M01_GLEventListener implements GLEventListener {
     //setup light
     light = new Light(gl);
     light.setCamera(camera);
-    
+
 
 
     // MODELS ***************************************************
 
-    //create floor 
+    //create floor
     Mesh mesh = new Mesh(gl, TwoTriangles.vertices.clone(), TwoTriangles.indices.clone());
     Shader shader = new Shader(gl, "vs_tt_05.txt", "fs_tt_05.txt");
     Material material = new Material(new Vec3(0.0f, 0.5f, 0.81f), new Vec3(0.0f, 0.5f, 0.81f), new Vec3(0.3f, 0.3f, 0.3f), 32.0f);
     Mat4 modelMatrix = Mat4Transform.scale(16,1f,16);
     floor = new Model(gl, camera, light, shader, material, modelMatrix, mesh, textureId0);
-    
+
     //create snowman model
     mesh = new Mesh(gl, Sphere.vertices.clone(), Sphere.indices.clone());
     shader = new Shader(gl, "vs_sphere_04.txt", "fs_sphere_04.txt");
-    
+
     // no texture version
     // shader = new Shader(gl, "vs_sphere_04.txt", "fs_sphere_04_notex.txt");
-    
+
     material = new Material(new Vec3(1.0f, 0.5f, 0.31f), new Vec3(1.0f, 0.5f, 0.31f), new Vec3(0.5f, 0.5f, 0.5f), 32.0f);
       //Model matricies are irrelevant when using scene graph.
-      //Scene graph supplies the transformations.   
+      //Scene graph supplies the transformations.
     // modelMatrix = Mat4.multiply(Mat4Transform.scale(3,3,3), Mat4Transform.translate(0,0.5f,0));
     // modelMatrix = Mat4.multiply(Mat4Transform.translate(0,4,0), modelMatrix);
-    
+
     sphere = new Model(gl, camera, light, shader, material, modelMatrix, mesh, textureId5, textureId4);
 
     button = new Model(gl, camera, light, shader, material, modelMatrix, mesh, textureId3, textureId4);
 
-    
+
     // no texture version
-    // sphere = new Model(gl, camera, light, shader, material, modelMatrix, mesh); 
+    // sphere = new Model(gl, camera, light, shader, material, modelMatrix, mesh);
 
     //create snowman scene graph
     sceneGraphRoot = new NameNode("Scene graph: snowman");
 
-    NameNode base = new NameNode("snowman's base");
+    NameNode base = new NameNode("base");
       Mat4 m = Mat4Transform.scale(3,3,3);
       m = Mat4.multiply(m, Mat4Transform.translate(0,0.5f,0.0f));
       TransformNode baseTransform = new TransformNode("scale(3,3,3); translate(0,0.5,0)", m);
 
       ModelNode baseShape = new ModelNode("base (sphere)", sphere);
 
-    NameNode head = new NameNode("snowman's head");
+    NameNode head = new NameNode("head");
       m = Mat4Transform.scale(2.5f,2.5f,2.5f);
       m = Mat4.multiply(m, Mat4Transform.translate(0.0f,1.5f,0.0f));
-      TransformNode headTransform = new TransformNode("scale(2.62f,2.62f,2.62f); translate(0.0f,1.5f,0.0f);", m); 
+      TransformNode headTransform = new TransformNode("scale(2.62f,2.62f,2.62f); translate(0.0f,1.5f,0.0f);", m);
 
       ModelNode headShape = new ModelNode("head (sphere)", sphere);
 
+    
+    NameNode buttons = new NameNode("buttons");
     //1. - adjust the size. Move to the bottom spot. Translate the 2nd button and third button. translate third button
-    NameNode bottomButton = new NameNode("snowman's bottom button");
+    //TODO: make separate translations for each, except scalling
+    NameNode bottomButton = new NameNode("bottom button");
     float scale = 0.3f;
       m = Mat4Transform.scale(scale,scale,scale);
       m = Mat4.multiply(m, Mat4Transform.translate(0.0f,4f,6f));
@@ -152,50 +156,83 @@ public class M01_GLEventListener implements GLEventListener {
 
       ModelNode bottomButtonShape = new ModelNode("bottom button (sphere)", button);
 
-    NameNode middleButton = new NameNode("snowman's middle button");
-      Mat4  mMiddleButton = Mat4Transform.translate(0.0f, 2f, 0.0f);
-      TransformNode middleButtonTransform = new TransformNode("translate(0.0f, 0.3f, 0.0f);", mMiddleButton);
-      
-      ModelNode middleButtonShape = new ModelNode("middle button (sphere)", button);
+    NameNode middleButton = new NameNode("middle button");
+      m = Mat4Transform.translate(0.0f, 2f, 0.0f);
+      TransformNode middleButtonTransform = new TransformNode("translate(0.0f, 0.3f, 0.0f);", m);
+
+      ModelNode middleButtonShape = new ModelNode("middle button (sphere - button)", button);
+
+    NameNode topButton = new NameNode("top button");
+      m = Mat4Transform.translate(0.0f, 2f, 0.0f);
+      TransformNode topButtonTransform = new TransformNode("translate(0.0f, 0.3f, 0.0f);", m);
+
+      ModelNode topButtonShape = new ModelNode("top button (sphere - button)", button);
+
+    NameNode eyes = new NameNode("eyes");
+    float scaleEye = 0.3f;
+    float eyeDistance = 1f;
+
+    NameNode leftEye = new NameNode("left eye");
+      m =  Mat4Transform.scale(scaleEye,scaleEye,scaleEye);
+      m = Mat4.multiply(m, Mat4Transform.translate(-eyeDistance, 14f, 6f));
+      // mLeftEye = Mat4.multiply(mLeftEye, Mat4Transform.translate(0.0f, 8.5f, 12f));
+
+      TransformNode leftEyeTransform = new TransformNode("scale(" + scaleEye + ","  + scaleEye + "," + scaleEye + "); translate(-0.6f, 14f, 6f);", m);
+
+      ModelNode leftEyeShape = new ModelNode("left eye (sphere - button)", button);
+
+
+    NameNode rightEye = new NameNode("right eye");
+    m =  Mat4Transform.scale(scaleEye,scaleEye,scaleEye);
+    m = Mat4.multiply(m, Mat4Transform.translate(eyeDistance, 14f, 6f));
+    // mLeftEye = Mat4.multiply(mLeftEye, Mat4Transform.translate(0.0f, 8.5f, 12f));
+
+    TransformNode rightEyeTransform = new TransformNode("scale(" + scaleEye + ","  + scaleEye + "," + scaleEye + "); translate(0.6f, 14f, 6f);", m);
+
+    ModelNode rightEyeShape = new ModelNode("right eye (sphere - button)", button);
+
+
+
+
     
-    NameNode topButton = new NameNode("snowman's top button");
-      Mat4 mTopButton = Mat4Transform.translate(0.0f, 2f, 0.0f);
-      TransformNode topButtonTransform = new TransformNode("translate(0.0f, 0.3f, 0.0f);", mTopButton);
-
-      ModelNode topButtonShape = new ModelNode("top button (sphere)", button);
-      
-
-    NameNode buttons = new NameNode("snowman's buttons");
-
-
-
- 
+    //TODO: improve tree structure by making head dependant on base
     sceneGraphRoot.addChild(base);
       base.addChild(baseTransform);
         baseTransform.addChild(baseShape);
       base.addChild(head);
         head.addChild(headTransform);
           headTransform.addChild(headShape);
-      base.addChild(buttons);
-        buttons.addChild(initialButtonTransfom);
-          initialButtonTransfom.addChild(bottomButton);
-            bottomButton.addChild(bottomButtonShape);
-          initialButtonTransfom.addChild(middleButtonTransform);
-            middleButtonTransform.addChild(middleButton);
-              middleButton.addChild(middleButtonShape);
-            middleButtonTransform.addChild(topButtonTransform);
-              topButtonTransform.addChild(topButton);
-                topButton.addChild(topButtonShape);
-
-
-
-        
+        head.addChild(eyes);
+        eyes.addChild(leftEye);
+          leftEye.addChild(leftEyeTransform);
+            leftEyeTransform.addChild(leftEyeShape);
+          eyes.addChild(rightEye);
+          rightEye.addChild(rightEyeTransform);
+            rightEyeTransform.addChild(rightEyeShape);
+          sceneGraphRoot.addChild(buttons);
+          buttons.addChild(initialButtonTransfom);
+            initialButtonTransfom.addChild(bottomButton);
+              bottomButton.addChild(bottomButtonShape);
+            initialButtonTransfom.addChild(middleButtonTransform);
+              middleButtonTransform.addChild(middleButton);
+                middleButton.addChild(middleButtonShape);
+              middleButtonTransform.addChild(topButtonTransform);
+                topButtonTransform.addChild(topButton);
+                  topButton.addChild(topButtonShape);
 
     
-
+    
     
 
-    
+
+
+
+
+
+
+
+
+
     sceneGraphRoot.update();
 
     sceneGraphRoot.print(0,false);
@@ -204,10 +241,10 @@ public class M01_GLEventListener implements GLEventListener {
   }
 
 
- 
+
   private void render(GL3 gl) {
     gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
-    
+
     light.setPosition(getLightPosition());  // changing light position each frame
     light.render(gl);
 
@@ -223,33 +260,33 @@ public class M01_GLEventListener implements GLEventListener {
     float y = 2.7f;
     float z = 5.0f*(float)(Math.cos(Math.toRadians(elapsedTime*50)));
     return new Vec3(x,y,z);
-    
+
     //return new Vec3(5f,3.4f,5f);  // use to set in a specific position for testing
   }
-  
+
     // ***************************************************
   /* TIME
-   */ 
-  
+   */
+
   private double startTime;
-  
+
   private double getSeconds() {
     return System.currentTimeMillis()/1000.0;
   }
 
   // ***************************************************
   /* An array of random numbers
-   */ 
-  
+   */
+
   private int NUM_RANDOMS = 1000;
   private float[] randoms;
-  
+
   private void createRandomNumbers() {
     randoms = new float[NUM_RANDOMS];
     for (int i=0; i<NUM_RANDOMS; ++i) {
       randoms[i] = (float)Math.random();
     }
   }
-  
-  
+
+
 }
