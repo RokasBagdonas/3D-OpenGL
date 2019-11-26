@@ -170,11 +170,13 @@ public class M01_GLEventListener implements GLEventListener {
 
     NameNode eyes = new NameNode("eyes");
     float scaleEye = 0.3f;
-    float eyeDistance = 1f;
+    float eyeDistance = 0.35f;
+    float eyeY = 4.3f;
+    float eyeZ = 1.1f;
 
     NameNode leftEye = new NameNode("left eye");
       m =  Mat4Transform.scale(scaleEye,scaleEye,scaleEye);
-      m = Mat4.multiply(m, Mat4Transform.translate(-eyeDistance, 14f, 6f));
+      m = Mat4.multiply(Mat4Transform.translate(-eyeDistance, eyeY, eyeZ), m);
       // mLeftEye = Mat4.multiply(mLeftEye, Mat4Transform.translate(0.0f, 8.5f, 12f));
 
       TransformNode leftEyeTransform = new TransformNode("scale(" + scaleEye + ","  + scaleEye + "," + scaleEye + "); translate(-0.6f, 14f, 6f);", m);
@@ -184,18 +186,23 @@ public class M01_GLEventListener implements GLEventListener {
 
     NameNode rightEye = new NameNode("right eye");
     m =  Mat4Transform.scale(scaleEye,scaleEye,scaleEye);
-    m = Mat4.multiply(m, Mat4Transform.translate(eyeDistance, 14f, 6f));
+    m = Mat4.multiply(Mat4Transform.translate(eyeDistance, eyeY, eyeZ), m);
     // mLeftEye = Mat4.multiply(mLeftEye, Mat4Transform.translate(0.0f, 8.5f, 12f));
 
     TransformNode rightEyeTransform = new TransformNode("scale(" + scaleEye + ","  + scaleEye + "," + scaleEye + "); translate(0.6f, 14f, 6f);", m);
 
     ModelNode rightEyeShape = new ModelNode("right eye (sphere - button)", button);
 
+    NameNode nose = new NameNode("nose");
+      m = Mat4Transform.scale(0.2f, 0.2f, 0.6f);
+      m = Mat4.multiply(Mat4Transform.translate(0.0f, 4f, 1.35f), m);
+
+      TransformNode noseTransform = new TransformNode("scale(0.3f, 0.3f, 0.5f); translate(0.0f, 4f, 1f);", m);
+      ModelNode noseShape = new ModelNode("nose (sphere - nose)", button);
 
 
 
     
-    //TODO: improve tree structure by making head dependant on base
     sceneGraphRoot.addChild(base);
       base.addChild(baseTransform);
         baseTransform.addChild(baseShape);
@@ -211,6 +218,10 @@ public class M01_GLEventListener implements GLEventListener {
             eyes.addChild(rightEye);
             rightEye.addChild(rightEyeTransform);
               rightEyeTransform.addChild(rightEyeShape);
+
+        head.addChild(nose);
+          nose.addChild(noseTransform);
+            noseTransform.addChild(noseShape);
 
       base.addChild(buttons);
       buttons.addChild(initialButtonTransfom);
