@@ -199,26 +199,29 @@ public class M01_GLEventListener implements GLEventListener {
     sceneGraphRoot.addChild(base);
       base.addChild(baseTransform);
         baseTransform.addChild(baseShape);
+        
       base.addChild(head);
         head.addChild(headTransform);
           headTransform.addChild(headShape);
         head.addChild(eyes);
-        eyes.addChild(leftEye);
-          leftEye.addChild(leftEyeTransform);
-            leftEyeTransform.addChild(leftEyeShape);
-          eyes.addChild(rightEye);
-          rightEye.addChild(rightEyeTransform);
-            rightEyeTransform.addChild(rightEyeShape);
-          sceneGraphRoot.addChild(buttons);
-          buttons.addChild(initialButtonTransfom);
-            initialButtonTransfom.addChild(bottomButton);
-              bottomButton.addChild(bottomButtonShape);
-            initialButtonTransfom.addChild(middleButtonTransform);
-              middleButtonTransform.addChild(middleButton);
-                middleButton.addChild(middleButtonShape);
-              middleButtonTransform.addChild(topButtonTransform);
-                topButtonTransform.addChild(topButton);
-                  topButton.addChild(topButtonShape);
+
+          eyes.addChild(leftEye);
+            leftEye.addChild(leftEyeTransform);
+              leftEyeTransform.addChild(leftEyeShape);
+            eyes.addChild(rightEye);
+            rightEye.addChild(rightEyeTransform);
+              rightEyeTransform.addChild(rightEyeShape);
+
+      base.addChild(buttons);
+      buttons.addChild(initialButtonTransfom);
+        initialButtonTransfom.addChild(bottomButton);
+          bottomButton.addChild(bottomButtonShape);
+        initialButtonTransfom.addChild(middleButtonTransform);
+          middleButtonTransform.addChild(middleButton);
+            middleButton.addChild(middleButtonShape);
+          middleButtonTransform.addChild(topButtonTransform);
+            topButtonTransform.addChild(topButton);
+              topButton.addChild(topButtonShape);
 
     
     
