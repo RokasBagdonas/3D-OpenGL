@@ -135,38 +135,40 @@ public class M01_GLEventListener implements GLEventListener {
 
     NameNode base = new NameNode("base");
       Mat4 m = Mat4Transform.scale(3,3,3);
-      m = Mat4.multiply(m, Mat4Transform.translate(0,0.5f,0.0f));
+      m = Mat4.multiply(Mat4Transform.translate(0,1.5f,0.0f), m);
       TransformNode baseTransform = new TransformNode("scale(3,3,3); translate(0,0.5,0)", m);
 
       ModelNode baseShape = new ModelNode("base (sphere)", sphere);
 
     NameNode head = new NameNode("head");
       m = Mat4Transform.scale(2.5f,2.5f,2.5f);
-      m = Mat4.multiply(m, Mat4Transform.translate(0.0f,1.5f,0.0f));
+      m = Mat4.multiply(Mat4Transform.translate(0.0f,3.8f,0.0f), m);
       TransformNode headTransform = new TransformNode("scale(2.62f,2.62f,2.62f); translate(0.0f,1.5f,0.0f);", m);
 
       ModelNode headShape = new ModelNode("head (sphere)", sphere);
 
     
     NameNode buttons = new NameNode("buttons");
-    //1. - adjust the size. Move to the bottom spot. Translate the 2nd button and third button. translate third button
-    //TODO: FIX TRANSLATIONS. FIRST SCALE, THEN TRANSLATE
+
     NameNode bottomButton = new NameNode("bottom button");
-    float scale = 0.3f;
+    float scale = 0.25f;
+      //1. scale and move all buttons to the bottom button position
       m = Mat4Transform.scale(scale,scale,scale);
-      m = Mat4.multiply(m, Mat4Transform.translate(0.0f,4f,6f));
+      m = Mat4.multiply(Mat4Transform.translate(0.0f,1.2f,1.5f), m);
       TransformNode initialButtonTransfom = new TransformNode("scale(1.1f, 1.1f, 1.1f); translate(0.0f,1.8f,0.9f);", m);
 
       ModelNode bottomButtonShape = new ModelNode("bottom button (sphere)", button);
 
     NameNode middleButton = new NameNode("middle button");
-      m = Mat4Transform.translate(0.0f, 2f, 0.0f);
+      //2. move reamining button relative to the bottom one
+      m = Mat4Transform.translate(0.0f, 2f, -0.01f);
       TransformNode middleButtonTransform = new TransformNode("translate(0.0f, 0.3f, 0.0f);", m);
 
       ModelNode middleButtonShape = new ModelNode("middle button (sphere - button)", button);
-
+    
     NameNode topButton = new NameNode("top button");
-      m = Mat4Transform.translate(0.0f, 2f, 0.0f);
+      //3. move top button relative to the middle one
+      m = Mat4Transform.translate(0.0f, 1.8f, -0.2f);
       TransformNode topButtonTransform = new TransformNode("translate(0.0f, 0.3f, 0.0f);", m);
 
       ModelNode topButtonShape = new ModelNode("top button (sphere - button)", button);
@@ -188,13 +190,13 @@ public class M01_GLEventListener implements GLEventListener {
 
 
     NameNode rightEye = new NameNode("right eye");
-    m =  Mat4Transform.scale(scaleEye,scaleEye,scaleEye);
-    m = Mat4.multiply(Mat4Transform.translate(eyeDistance, eyeY, eyeZ), m);
-    // mLeftEye = Mat4.multiply(mLeftEye, Mat4Transform.translate(0.0f, 8.5f, 12f));
+      m =  Mat4Transform.scale(scaleEye,scaleEye,scaleEye);
+      m = Mat4.multiply(Mat4Transform.translate(eyeDistance, eyeY, eyeZ), m);
+      // mLeftEye = Mat4.multiply(mLeftEye, Mat4Transform.translate(0.0f, 8.5f, 12f));
 
-    TransformNode rightEyeTransform = new TransformNode("scale(" + scaleEye + ","  + scaleEye + "," + scaleEye + "); translate(0.6f, 14f, 6f);", m);
+      TransformNode rightEyeTransform = new TransformNode("scale(" + scaleEye + ","  + scaleEye + "," + scaleEye + "); translate(0.6f, 14f, 6f);", m);
 
-    ModelNode rightEyeShape = new ModelNode("right eye (sphere - button)", button);
+      ModelNode rightEyeShape = new ModelNode("right eye (sphere - button)", button);
 
     NameNode nose0 = new NameNode("nose0");
       m = Mat4Transform.scale(0.2f, 0.2f, 0.6f);
@@ -208,7 +210,7 @@ public class M01_GLEventListener implements GLEventListener {
       m = Mat4.multiply(Mat4Transform.translate(0.0f, 3.5f, 1.2f), m);
 
       TransformNode mouthTransform = new TransformNode("scale(0.3f, 0.3f, 0.5f); translate(0.0f, 4f, 1f);", m);
-      ModelNode mouthShape = new ModelNode("mouth (sphere - mouth)", button);
+      ModelNode mouthShape = new ModelNode("mouth (sphere - mouth)", nose);
 
 
     
@@ -266,7 +268,6 @@ public class M01_GLEventListener implements GLEventListener {
 
 
   }
-
 
 
   private void render(GL3 gl) {
