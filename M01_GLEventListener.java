@@ -70,7 +70,7 @@ public class M01_GLEventListener implements GLEventListener {
 
   private Camera camera;
   private Mat4 perspective; // ?
-  private Model floor, cube, sphere, button;
+  private Model floor, cube, sphere, button, nose;
   private Light light;
   private SGNode sceneGraphRoot;
 
@@ -86,11 +86,13 @@ public class M01_GLEventListener implements GLEventListener {
     createRandomNumbers();
     //Load textures
     int[] textureId0 = TextureLibrary.loadTexture(gl, "textures/chequerboard.jpg");
-    // int[] textureId1 = TextureLibrary.loadTexture(gl, "textures/container2.jpg");
-    // int[] textureId2 = TextureLibrary.loadTexture(gl, "textures/container2_specular.jpg");
     int[] textureId3 = TextureLibrary.loadTexture(gl, "textures/jade.jpg");
     int[] textureId4 = TextureLibrary.loadTexture(gl, "textures/jade_specular.jpg");
     int[] textureId5 = TextureLibrary.loadTexture(gl, "textures/snow1.jpg");
+    //Coal1 texture: https://images.app.goo.gl/EbwyCAxWsHt1kpx16
+    int[] textureCoal1 = TextureLibrary.loadTexture(gl, "textures/coal1.jpg");
+    //Wood1 texture: https://opengameart.org/content/wood-texture-tiles
+    int[] textureWood1 = TextureLibrary.loadTexture(gl, "textures/wood1.jpg");
     //setup light
     light = new Light(gl);
     light.setCamera(camera);
@@ -121,8 +123,9 @@ public class M01_GLEventListener implements GLEventListener {
 
     sphere = new Model(gl, camera, light, shader, material, modelMatrix, mesh, textureId5, textureId4);
 
-    button = new Model(gl, camera, light, shader, material, modelMatrix, mesh, textureId3, textureId4);
-
+    button = new Model(gl, camera, light, shader, material, modelMatrix, mesh, textureCoal1, textureId4);
+    nose = new Model(gl, camera, light, shader, material, modelMatrix, mesh, textureWood1, textureId4);
+    
 
     // no texture version
     // sphere = new Model(gl, camera, light, shader, material, modelMatrix, mesh);
@@ -147,7 +150,7 @@ public class M01_GLEventListener implements GLEventListener {
     
     NameNode buttons = new NameNode("buttons");
     //1. - adjust the size. Move to the bottom spot. Translate the 2nd button and third button. translate third button
-    //TODO: make separate translations for each, except scalling
+    //TODO: FIX TRANSLATIONS. FIRST SCALE, THEN TRANSLATE
     NameNode bottomButton = new NameNode("bottom button");
     float scale = 0.3f;
       m = Mat4Transform.scale(scale,scale,scale);
@@ -193,12 +196,12 @@ public class M01_GLEventListener implements GLEventListener {
 
     ModelNode rightEyeShape = new ModelNode("right eye (sphere - button)", button);
 
-    NameNode nose = new NameNode("nose");
+    NameNode nose0 = new NameNode("nose0");
       m = Mat4Transform.scale(0.2f, 0.2f, 0.6f);
       m = Mat4.multiply(Mat4Transform.translate(0.0f, 4f, 1.35f), m);
 
-      TransformNode noseTransform = new TransformNode("scale(0.3f, 0.3f, 0.5f); translate(0.0f, 4f, 1f);", m);
-      ModelNode noseShape = new ModelNode("nose (sphere - nose)", button);
+      TransformNode nose0Transform = new TransformNode("scale(0.3f, 0.3f, 0.5f); translate(0.0f, 4f, 1f);", m);
+      ModelNode nose0Shape = new ModelNode("nose0 (sphere - nose)", nose);
 
     NameNode mouth = new NameNode("mouth");
       m = Mat4Transform.scale(0.6f, 0.2f, 0.2f);
@@ -225,9 +228,9 @@ public class M01_GLEventListener implements GLEventListener {
             rightEye.addChild(rightEyeTransform);
               rightEyeTransform.addChild(rightEyeShape);
 
-        head.addChild(nose);
-          nose.addChild(noseTransform);
-            noseTransform.addChild(noseShape);
+        head.addChild(nose0);
+          nose0.addChild(nose0Transform);
+            nose0Transform.addChild(nose0Shape);
 
         head.addChild(mouth);
           mouth.addChild(mouthTransform);
