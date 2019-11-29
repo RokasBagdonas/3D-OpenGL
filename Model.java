@@ -78,9 +78,17 @@ public class Model {
     shader.setVec3(gl, "material.diffuse", material.getDiffuse());
     shader.setVec3(gl, "material.specular", material.getSpecular());
     shader.setFloat(gl, "material.shininess", material.getShininess());
+    /**
+      * glGenTextures(1, &tex) - creates a space to hold all data associated with the texture. tex stores reference to this location.
+      * glActiveTexture(GL_TEXTURE0) - selects texture unit that subsequent texture state calls will effect.
+      * glBindTexture(GL_TEXTURE_2D, tex) - bind texture object "tex" to the texture unit number 0.
+      *   Also, telling OpenGL that tex is a 2D texture (while it is bound).
+      *
+       */
 
     if (textureId1!=null) {
       shader.setInt(gl, "first_texture", 0);  // be careful to match these with GL_TEXTURE0 and GL_TEXTURE1
+      
       gl.glActiveTexture(GL.GL_TEXTURE0);
       gl.glBindTexture(GL.GL_TEXTURE_2D, textureId1[0]);
     }
