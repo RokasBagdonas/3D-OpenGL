@@ -93,6 +93,8 @@ public class M01_GLEventListener implements GLEventListener {
     int[] textureCoal1 = TextureLibrary.loadTexture(gl, "textures/coal1.jpg");
     //Wood1 texture: https://opengameart.org/content/wood-texture-tiles
     int[] textureWood1 = TextureLibrary.loadTexture(gl, "textures/wood1.jpg");
+    //"mud" texture: https://images.app.goo.gl/CwZs72esA97AFNiv8 
+    int[] textureMud1 = TextureLibrary.loadTexture(gl, "textures/coffeeStains1.jpg");
     //setup light
     light = new Light(gl);
     light.setCamera(camera);
@@ -112,19 +114,12 @@ public class M01_GLEventListener implements GLEventListener {
     mesh = new Mesh(gl, Sphere.vertices.clone(), Sphere.indices.clone());
     shader = new Shader(gl, "vs_sphere_04.txt", "fs_sphere_04.txt");
 
-    // no texture version
-    // shader = new Shader(gl, "vs_sphere_04.txt", "fs_sphere_04_notex.txt");
-
     material = new Material(new Vec3(1.0f, 0.5f, 0.31f), new Vec3(1.0f, 0.5f, 0.31f), new Vec3(0.5f, 0.5f, 0.5f), 32.0f);
-      //Model matricies are irrelevant when using scene graph.
-      //Scene graph supplies the transformations.
-    // modelMatrix = Mat4.multiply(Mat4Transform.scale(3,3,3), Mat4Transform.translate(0,0.5f,0));
-    // modelMatrix = Mat4.multiply(Mat4Transform.translate(0,4,0), modelMatrix);
 
-    sphere = new Model(gl, camera, light, shader, material, modelMatrix, mesh, textureId5, textureId4);
+    sphere = new Model(gl, camera, light, shader, material, modelMatrix, mesh, textureId5, textureMud1);
 
-    button = new Model(gl, camera, light, shader, material, modelMatrix, mesh, textureCoal1, textureId4);
-    nose = new Model(gl, camera, light, shader, material, modelMatrix, mesh, textureWood1, textureId4);
+    button = new Model(gl, camera, light, shader, material, modelMatrix, mesh, textureCoal1);
+    nose = new Model(gl, camera, light, shader, material, modelMatrix, mesh, textureWood1);
     
 
     // no texture version
@@ -252,13 +247,6 @@ public class M01_GLEventListener implements GLEventListener {
     
     
     
-
-
-
-
-
-
-
 
 
 

@@ -7,8 +7,9 @@ in vec2 aTexCoord;
 out vec4 fragColor;
  
 uniform vec3 viewPos;
-uniform sampler2D first_texture;
-uniform sampler2D second_texture;
+uniform sampler2D first_texture;  //diffuse texture
+uniform sampler2D second_texture;  //overlay diffuse texture for mud
+uniform sampler2D third_texture;  //specular texture
 
 struct Light {
   vec3 position;
@@ -29,6 +30,8 @@ struct Material {
 uniform Material material;
 
 void main() {
+  //vec2 mixedTexture = mix(first_texture, second_texture, 0.2);
+
   // ambient
   vec3 ambient = light.ambient * vec3(texture(first_texture, aTexCoord));
 
@@ -45,5 +48,12 @@ void main() {
   vec3 specular = light.specular * spec * vec3(texture(second_texture, aTexCoord));
 
   vec3 result = ambient + diffuse + specular;
+
   fragColor = vec4(result, 1.0);
+  
+  /*
+  fragColor = vec4(mix(texture(first_texture, aTexCoord),
+                       texture(second_texture, aTexCoord),
+                   0.3f).rgb, 1.0f);
+  */
 }
