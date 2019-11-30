@@ -90,6 +90,7 @@ public class M01_GLEventListener implements GLEventListener {
   private Mat4 perspective; // ?
   private Model floor, cube, sphere, button, nose;
   private Light light;
+  private Light ambientLight;
   private SGNode sceneGraphRoot;
 
 
@@ -98,6 +99,7 @@ public class M01_GLEventListener implements GLEventListener {
     //cube.dispose(gl);
     sphere.dispose(gl);
     light.dispose(gl);
+    ambientLight.dispose(gl);
   }
 
   public void initialise(GL3 gl) {
@@ -117,7 +119,11 @@ public class M01_GLEventListener implements GLEventListener {
     int[] textureMud1 = TextureLibrary.loadTexture(gl, "textures/coffeeStains1.jpg");
     //setup light
     light = new Light(gl);
+    ambientLight = new Light(gl);
+    ambientLight.setPosition(new Vec3(1.8f, 4f, 1.8f));
+
     light.setCamera(camera);
+    ambientLight.setCamera(camera);
 
 
 
@@ -136,10 +142,10 @@ public class M01_GLEventListener implements GLEventListener {
 
     material = new Material(new Vec3(1.0f, 0.5f, 0.31f), new Vec3(1.0f, 0.5f, 0.31f), new Vec3(0.8f, 0.8f, 0.8f), 15.0f);
 
-    sphere = new Model(gl, camera, light, shader, material, modelMatrix, mesh, textureSnow1, textureMud1, textureSnow1Specular);
+    sphere = new Model(gl, camera, light, ambientLight, shader, material, modelMatrix, mesh, textureSnow1, textureMud1, textureSnow1Specular);
 
-    button = new Model(gl, camera, light, shader, material, modelMatrix, mesh, textureCoal1);
-    nose = new Model(gl, camera, light, shader, material, modelMatrix, mesh, textureWood1);
+    button = new Model(gl, camera, light, ambientLight, shader, material, modelMatrix, mesh, textureCoal1);
+    nose = new Model(gl, camera, light, ambientLight,  shader, material, modelMatrix, mesh, textureWood1);
     
 
     // no texture version
@@ -283,6 +289,7 @@ public class M01_GLEventListener implements GLEventListener {
 
     light.setPosition(getLightPosition());  // changing light position each frame
     light.render(gl);
+    ambientLight.render(gl);
 
     floor.render(gl);
     // cube.render(gl);

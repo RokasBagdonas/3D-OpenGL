@@ -58,6 +58,7 @@ public class Light {
     Mat4 mvpMatrix = Mat4.multiply(camera.getPerspectiveMatrix(), Mat4.multiply(camera.getViewMatrix(), model));
     
     shader.use(gl);
+    //change uniform
     shader.setFloatArray(gl, "mvpMatrix", mvpMatrix.toFloatArrayForGLSL());
   
     gl.glBindVertexArray(vertexArrayId[0]);
