@@ -43,7 +43,7 @@ void main() {
   */
 
   vec3 mixed = vec3(mix(texture(first_texture, aTexCoord),
-                       texture(second_texture, aTexCoord), 0.3f).rgb);
+                       texture(second_texture, aTexCoord), 0.25f).rgb);
 
   vec3 ambient = light.ambient * mixed; 
 
