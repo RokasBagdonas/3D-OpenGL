@@ -66,10 +66,6 @@ public class M01 extends JFrame implements ActionListener {
 
 
   public void actionPerformed(ActionEvent e) {
-    if (glEventListener != null){
-
-    
-    this.glEventListener.test();
     if (e.getActionCommand().equalsIgnoreCase("start")) {
       this.glEventListener.startAnimation();
     }
@@ -78,7 +74,6 @@ public class M01 extends JFrame implements ActionListener {
     }
     else if(e.getActionCommand().equalsIgnoreCase("quit"))
       System.exit(0);
-  }
   }
 }
 
