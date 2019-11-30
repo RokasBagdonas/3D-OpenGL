@@ -8,7 +8,11 @@ import gmaths.*;
  */
 
 public class Material {
-
+  /**
+   * Materials have their specific ambient, diffuse, specular and emission components
+   * that are combined with corresponding Light object values to produce Blinn-Phong
+   * lighting.
+   */
   public static final Vec3 DEFAULT_AMBIENT = new Vec3(0.2f, 0.2f, 0.2f);
   public static final Vec3 DEFAULT_DIFFUSE = new Vec3(0.8f, 0.8f, 0.8f);
   public static final Vec3 DEFAULT_SPECULAR = new Vec3(0.5f, 0.5f, 0.5f);

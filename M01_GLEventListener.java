@@ -116,7 +116,7 @@ public class M01_GLEventListener implements GLEventListener {
 
     material = new Material(new Vec3(1.0f, 0.5f, 0.31f), new Vec3(1.0f, 0.5f, 0.31f), new Vec3(0.5f, 0.5f, 0.5f), 32.0f);
 
-    sphere = new Model(gl, camera, light, shader, material, modelMatrix, mesh, textureId5, textureMud1);
+    sphere = new Model(gl, camera, light, shader, material, modelMatrix, mesh, textureId5, textureMud1, textureId4);
 
     button = new Model(gl, camera, light, shader, material, modelMatrix, mesh, textureCoal1);
     nose = new Model(gl, camera, light, shader, material, modelMatrix, mesh, textureWood1);
