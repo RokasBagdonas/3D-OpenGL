@@ -90,7 +90,7 @@ public class M01_GLEventListener implements GLEventListener {
     int[] textureId4 = TextureLibrary.loadTexture(gl, "textures/jade_specular.jpg");
     // int[] textureId5 = TextureLibrary.loadTexture(gl, "textures/snow1.jpg");
     int[] textureSnow1 = TextureLibrary.loadTexture(gl, "textures/tomek/snow7_d.jpg");
-    int[] textureSnow1Specular = TextureLibrary.loadTexture(gl, "textures/tomek/snow7_h.jpg");
+    int[] textureSnow1Specular = TextureLibrary.loadTexture(gl, "textures/tomek/snow7_s.jpg");
     //Coal1 texture: https://images.app.goo.gl/EbwyCAxWsHt1kpx16
     int[] textureCoal1 = TextureLibrary.loadTexture(gl, "textures/coal1.jpg");
     //Wood1 texture: https://opengameart.org/content/wood-texture-tiles
@@ -116,7 +116,7 @@ public class M01_GLEventListener implements GLEventListener {
     mesh = new Mesh(gl, Sphere.vertices.clone(), Sphere.indices.clone());
     shader = new Shader(gl, "vs_sphere_04.txt", "fs_sphere_04.txt");
 
-    material = new Material(new Vec3(1.0f, 0.5f, 0.31f), new Vec3(1.0f, 0.5f, 0.31f), new Vec3(0.5f, 0.5f, 0.5f), 150.0f);
+    material = new Material(new Vec3(1.0f, 0.5f, 0.31f), new Vec3(1.0f, 0.5f, 0.31f), new Vec3(0.8f, 0.8f, 0.8f), 15.0f);
 
     sphere = new Model(gl, camera, light, shader, material, modelMatrix, mesh, textureSnow1, textureMud1, textureSnow1Specular);
 
