@@ -62,6 +62,24 @@ public class M01_GLEventListener implements GLEventListener {
     disposeModels(gl);
   }
 
+  //Interaction **************************************
+  private boolean animation = false;
+  private double savedTime = 0;
+
+  public void startAnimation() {
+    animation = true;
+    startTime = getSeconds()-savedTime;
+  }
+   
+  public void stopAnimation() {
+    animation = false;
+    double elapsedTime = getSeconds()-startTime;
+    savedTime = elapsedTime;
+  }
+
+  public void test() {
+    System.out.println("Test M01 GL EVENT LISTENER");
+  }
   // ***************************************************
   /* THE SCENE
    * Now define all the methods to handle the scene.

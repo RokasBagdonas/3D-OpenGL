@@ -15,8 +15,9 @@ Model a fedora or a cowboy's hat.
 ### Task 3 - texture map the snowman
 
 1. Apply snow and mud textures to the snowman; reduce specularity
-2. Apply coal texture to buttons; reduce specularity
-3. Apply wood texture to nose; reduce specularity
+2. Apply coal texture to buttons;
+3. Apply wood texture to nose;
+4. (extra) apply coal and wood specular maps using Materliase
 
 
 ## Metal object near the snowman
