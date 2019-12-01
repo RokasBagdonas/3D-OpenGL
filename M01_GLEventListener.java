@@ -71,7 +71,7 @@ public class M01_GLEventListener implements GLEventListener {
   private Camera camera;
   private Mat4 perspective; // ?
   private Model floor, cube, sphere, button, nose;
-  private Light light;
+  private Light light, worldLight;
   private SGNode sceneGraphRoot;
 
 
@@ -88,7 +88,7 @@ public class M01_GLEventListener implements GLEventListener {
     int[] textureId0 = TextureLibrary.loadTexture(gl, "textures/chequerboard.jpg");
     int[] textureId3 = TextureLibrary.loadTexture(gl, "textures/jade.jpg");
     int[] textureId4 = TextureLibrary.loadTexture(gl, "textures/jade_specular.jpg");
-    // int[] textureId5 = TextureLibrary.loadTexture(gl, "textures/snow1.jpg");
+    //snow textures from: https://opengameart.org/content/tomeks-seamless-snow-textures 
     int[] textureSnow1 = TextureLibrary.loadTexture(gl, "textures/tomek/snow7_d.jpg");
     int[] textureSnow1Specular = TextureLibrary.loadTexture(gl, "textures/tomek/snow7_s.jpg");
     //Coal1 texture: https://images.app.goo.gl/EbwyCAxWsHt1kpx16
@@ -100,6 +100,11 @@ public class M01_GLEventListener implements GLEventListener {
     //setup light
     light = new Light(gl);
     light.setCamera(camera);
+    
+    worldLight = new Light(gl);
+    worldLight.setCamera(camera);
+    worldLight.setPosition(new Vec3(1.5f, 5.0f, 0.6f));
+    
 
 
 
@@ -110,7 +115,7 @@ public class M01_GLEventListener implements GLEventListener {
     Shader shader = new Shader(gl, "vs_tt_05.txt", "fs_tt_05.txt");
     Material material = new Material(new Vec3(0.0f, 0.5f, 0.81f), new Vec3(0.0f, 0.5f, 0.81f), new Vec3(0.3f, 0.3f, 0.3f), 32.0f);
     Mat4 modelMatrix = Mat4Transform.scale(16,1f,16);
-    floor = new Model(gl, camera, light, shader, material, modelMatrix, mesh, textureId0);
+    floor = new Model(gl, camera, light, worldLight, shader, material, modelMatrix, mesh, textureId0, textureMud1, textureSnow1Specular);
 
     //create snowman model
     mesh = new Mesh(gl, Sphere.vertices.clone(), Sphere.indices.clone());
@@ -118,10 +123,10 @@ public class M01_GLEventListener implements GLEventListener {
 
     material = new Material(new Vec3(1.0f, 0.5f, 0.31f), new Vec3(1.0f, 0.5f, 0.31f), new Vec3(0.8f, 0.8f, 0.8f), 15.0f);
 
-    sphere = new Model(gl, camera, light, shader, material, modelMatrix, mesh, textureSnow1, textureMud1, textureSnow1Specular);
+    sphere = new Model(gl, camera, light, worldLight, shader, material, modelMatrix, mesh, textureSnow1, textureMud1, textureSnow1Specular);
 
-    button = new Model(gl, camera, light, shader, material, modelMatrix, mesh, textureCoal1);
-    nose = new Model(gl, camera, light, shader, material, modelMatrix, mesh, textureWood1);
+    button = new Model(gl, camera, light, worldLight, shader, material, modelMatrix, mesh, textureCoal1, textureMud1, textureSnow1Specular);
+    nose = new Model(gl, camera, light, worldLight, shader, material, modelMatrix, mesh, textureWood1, textureMud1, textureSnow1Specular);
     
 
     // no texture version
@@ -265,7 +270,7 @@ public class M01_GLEventListener implements GLEventListener {
 
     light.setPosition(getLightPosition());  // changing light position each frame
     light.render(gl);
-
+    worldLight.render(gl);
     floor.render(gl);
     // cube.render(gl);
     sceneGraphRoot.draw(gl);

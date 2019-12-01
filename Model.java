@@ -3,6 +3,11 @@ import java.nio.*;
 import com.jogamp.common.nio.*;
 import com.jogamp.opengl.*;
 
+/**
+ * used for controlling how the mesh looks like when rendered.
+ * question - how to add multiple lights? by changing Model class?
+ * quesiton - where are the Light object values stored?
+ */
 public class Model {
   
   private Mesh mesh;
@@ -14,6 +19,20 @@ public class Model {
   private Mat4 modelMatrix;
   private Camera camera;
   private Light light;
+  private Light worldLight;
+
+  public Model(GL3 gl, Camera camera, Light light, Light worldLight, Shader shader, Material material, Mat4 modelMatrix, Mesh mesh, int[] textureId1, int[] textureId2, int[] textureId3) {
+    this.mesh = mesh;
+    this.material = material;
+    this.modelMatrix = modelMatrix;
+    this.shader = shader;
+    this.camera = camera;
+    this.light = light;
+    this.worldLight = worldLight;
+    this.textureId1 = textureId1;
+    this.textureId2 = textureId2;
+    this.textureId3 = textureId3;
+  }
 
   public Model(GL3 gl, Camera camera, Light light, Shader shader, Material material, Mat4 modelMatrix, Mesh mesh, int[] textureId1, int[] textureId2, int[] textureId3) {
     this.mesh = mesh;
@@ -73,6 +92,11 @@ public class Model {
     shader.setVec3(gl, "light.ambient", light.getMaterial().getAmbient());
     shader.setVec3(gl, "light.diffuse", light.getMaterial().getDiffuse());
     shader.setVec3(gl, "light.specular", light.getMaterial().getSpecular());
+
+    shader.setVec3(gl, "worldLight.position", worldLight.getPosition());
+    shader.setVec3(gl, "worldLight.ambient", worldLight.getMaterial().getAmbient());
+    shader.setVec3(gl, "worldLight.diffuse", worldLight.getMaterial().getDiffuse());
+    shader.setVec3(gl, "worldLight.specular", worldLight.getMaterial().getSpecular());
 
     shader.setVec3(gl, "material.ambient", material.getAmbient());
     shader.setVec3(gl, "material.diffuse", material.getDiffuse());
