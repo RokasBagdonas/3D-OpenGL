@@ -338,18 +338,19 @@ public class M01_GLEventListener implements GLEventListener {
     snowmanSlideTranslate.setTransform(Mat4Transform.translate(snowmanXPos, 0.0f, 0.0f));
     snowmanSlideTranslate.update();
   }
-  private boolean incRotateZ = true;
-  private int rotateAroundZ = 0;
-  private static final int rotateZInc = 2;
+  private float rotateAroundZ = 0;
+  private  final static int ROTATE_Z_MAX = 65;
+  private int sign = 1;
   private void rockSnowman(){
-    if (incRotateZ){
-      if(rotateAroundZ >= 75) incRotateZ = false;
-      else rotateAroundZ += rotateZInc;
-    }
-    if (!incRotateZ){
-      if(rotateAroundZ <= -75) incRotateZ = true;
-      else rotateAroundZ -= rotateZInc;
-    }
+    double elapsedTime = getSeconds()-startTime;
+    double radianAngle = Math.toRadians(elapsedTime*40);
+    
+    if(rotateAroundZ >= ROTATE_Z_MAX) sign = -1;
+    else if (rotateAroundZ <= -ROTATE_Z_MAX) sign = 1;
+
+    rotateAroundZ += sign * Math.abs(1.5f*(float)(Math.sin(Math.toRadians(elapsedTime*30))));
+    System.out.println(rotateAroundZ);
+
     snowmanBaseRotate.setTransform(Mat4Transform.rotateAroundZ(rotateAroundZ));
     snowmanBaseRotate.update();
 
