@@ -100,7 +100,9 @@ public class M01_GLEventListener implements GLEventListener {
   private Light light, worldLight;
   private SGNode sceneGraphRoot;
   private TransformNode snowmanSlideTranslate = new TransformNode("translate(x,0,z);", Mat4Transform.translate(0.0f,0.0f,0.0f));
-  private TransformNode snowmanBaseRotate = new TransformNode("rotate(0,0,rotateAroundZ)", Mat4Transform.rotateAroundZ(0));
+  private TransformNode snowmanBaseRotateZ = new TransformNode("rotate(0,0,rotateZ)", Mat4Transform.rotateAroundZ(0));
+  private TransformNode snowmanBaseRotateX = new TransformNode("rotate(0,0,rotateX)", Mat4Transform.rotateAroundX(0));
+  
 
   private void disposeModels(GL3 gl) {
     floor.dispose(gl);
@@ -245,8 +247,13 @@ public class M01_GLEventListener implements GLEventListener {
 
     
     sceneGraphRoot.addChild(snowmanSlideTranslate);
-      snowmanSlideTranslate.addChild(snowmanBaseRotate);
-      snowmanBaseRotate.addChild(base);
+      //slide
+      snowmanSlideTranslate.addChild(snowmanBaseRotateZ);
+      //rock
+      snowmanBaseRotateZ.addChild(snowmanBaseRotateX);
+      snowmanBaseRotateX.addChild(base);
+
+      //snowman
       base.addChild(baseTransform);
         baseTransform.addChild(baseShape);
         
@@ -338,21 +345,27 @@ public class M01_GLEventListener implements GLEventListener {
     snowmanSlideTranslate.setTransform(Mat4Transform.translate(snowmanXPos, 0.0f, 0.0f));
     snowmanSlideTranslate.update();
   }
-  private float rotateAroundZ = 0;
-  private  final static int ROTATE_Z_MAX = 65;
-  private int sign = 1;
+  private float rotateZ = 0;
+  private float rotateX = 0;
+  private final static int ROTATE_Z_MAX = 45;
+  private int signZ = 1;
+  private int signX = 1;
   private void rockSnowman(){
     double elapsedTime = getSeconds()-startTime;
-    double radianAngle = Math.toRadians(elapsedTime*40);
     
-    if(rotateAroundZ >= ROTATE_Z_MAX) sign = -1;
-    else if (rotateAroundZ <= -ROTATE_Z_MAX) sign = 1;
+    if(rotateZ >= ROTATE_Z_MAX) signZ = -1;
+    else if (rotateZ <= -ROTATE_Z_MAX) signZ = 1;
 
-    rotateAroundZ += sign * Math.abs(1.5f*(float)(Math.sin(Math.toRadians(elapsedTime*30))));
-    System.out.println(rotateAroundZ);
+    if(rotateX >= ROTATE_Z_MAX) signX = -1;
+    else if (rotateX <= -ROTATE_Z_MAX) signX = 1;
 
-    snowmanBaseRotate.setTransform(Mat4Transform.rotateAroundZ(rotateAroundZ));
-    snowmanBaseRotate.update();
+    rotateZ += signZ * Math.abs(0.5f*(float)(Math.sin(Math.toRadians(elapsedTime*10))));
+    rotateX += signX * Math.abs(0.5f*(float)(Math.sin(Math.toRadians(elapsedTime*30))));
+
+    snowmanBaseRotateZ.setTransform(Mat4Transform.rotateAroundZ(rotateZ));
+    snowmanBaseRotateX.setTransform(Mat4Transform.rotateAroundX(rotateX));
+    snowmanBaseRotateX.update();
+    snowmanBaseRotateZ.update();
 
   }
 
