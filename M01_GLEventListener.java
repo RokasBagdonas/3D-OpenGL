@@ -65,14 +65,20 @@ public class M01_GLEventListener implements GLEventListener {
   //Interaction **************************************
   private boolean animation = false;
   private double savedTime = 0;
+  private boolean animateSlide = false;
+  private boolean animateRock = false;
+  private boolean animateRoll = false;
+  private float snowmanXPos = 0.0f;
+  private float snowmanZPos = 0.0f;
+
 
   public void startAnimation() {
-    animation = true;
+    animateSlide = true;
     startTime = getSeconds()-savedTime;
   }
    
   public void stopAnimation() {
-    animation = false;
+    animateSlide = false;
     double elapsedTime = getSeconds()-startTime;
     savedTime = elapsedTime;
   }
@@ -91,6 +97,7 @@ public class M01_GLEventListener implements GLEventListener {
   private Model floor, cube, sphere, button, nose;
   private Light light, worldLight;
   private SGNode sceneGraphRoot;
+  private TransformNode snowmanSlideTranslate = new TransformNode("translate(x,0,z);", Mat4Transform.translate(0.0f,0.0f,0.0f));
 
 
   private void disposeModels(GL3 gl) {
@@ -235,7 +242,8 @@ public class M01_GLEventListener implements GLEventListener {
 
 
     
-    sceneGraphRoot.addChild(base);
+    sceneGraphRoot.addChild(snowmanSlideTranslate);
+      snowmanSlideTranslate.addChild(base);
       base.addChild(baseTransform);
         baseTransform.addChild(baseShape);
         
@@ -291,6 +299,9 @@ public class M01_GLEventListener implements GLEventListener {
     light.render(gl);
     worldLight.render(gl);
     floor.render(gl);
+    if (animateSlide){
+      slideSnowman();
+    }
     // cube.render(gl);
     sceneGraphRoot.draw(gl);
   }
@@ -305,6 +316,31 @@ public class M01_GLEventListener implements GLEventListener {
 
     //return new Vec3(5f,3.4f,5f);  // use to set in a specific position for testing
   }
+
+  private boolean incX = true;
+  private boolean incZ = true;
+  private void slideSnowman() {
+    if(incX){
+      if(snowmanXPos > 4.0f) incX = false;
+      else snowmanXPos += 0.05f;
+    }
+    else if(!incX){
+      if(snowmanXPos < -4.0f) incX = true;
+      else snowmanXPos -= 0.05f;  
+    }
+
+    snowmanSlideTranslate.setTransform(Mat4Transform.translate(snowmanXPos, 0.0f, 0.0f));
+    snowmanSlideTranslate.update();
+  }
+  private boolean rotateZ = true;
+  private int rotateAroundZ = 0;
+  private void rockSnowman(){
+    if (rotateZ){
+      
+    }
+
+  }
+
 
     // ***************************************************
   /* TIME
