@@ -73,14 +73,16 @@ public class M01_GLEventListener implements GLEventListener {
 
 
   public void startAnimation() {
-    animateSlide = true;
+    //animateSlide = true;
     animateRock = true;
+    animateRoll = true;
     startTime = getSeconds()-savedTime;
   }
    
   public void stopAnimation() {
     animateSlide = false;
     animateRock = false;
+    animateRoll = false;
     double elapsedTime = getSeconds()-startTime;
     savedTime = elapsedTime;
   }
@@ -100,9 +102,11 @@ public class M01_GLEventListener implements GLEventListener {
   private Light light, worldLight;
   private SGNode sceneGraphRoot;
   private TransformNode snowmanSlideTranslate = new TransformNode("translate(x,0,z);", Mat4Transform.translate(0.0f,0.0f,0.0f));
-  private TransformNode snowmanBaseRotateZ = new TransformNode("rotate(0,0,rotateZ)", Mat4Transform.rotateAroundZ(0));
-  private TransformNode snowmanBaseRotateX = new TransformNode("rotate(0,0,rotateX)", Mat4Transform.rotateAroundX(0));
+  private TransformNode snowmanBaseRotateZ = new TransformNode("base rotate(0,0,rotateZ)", Mat4Transform.rotateAroundZ(0));
+  private TransformNode snowmanBaseRotateX = new TransformNode("base rotate(0,0,rotateX)", Mat4Transform.rotateAroundX(0));
   
+  private TransformNode snowmanHeadRotateZ = new TransformNode("head rotate(0,0,rotateZ)", Mat4Transform.rotateAroundZ(0));
+  private TransformNode snowmanHeadRotateX = new TransformNode("head rotate(0,0,rotateX)", Mat4Transform.rotateAroundX(0));
 
   private void disposeModels(GL3 gl) {
     floor.dispose(gl);
@@ -257,10 +261,17 @@ public class M01_GLEventListener implements GLEventListener {
       base.addChild(baseTransform);
         baseTransform.addChild(baseShape);
         
-      base.addChild(head);
+        base.addChild(snowmanHeadRotateZ);
+          snowmanHeadRotateZ.addChild(snowmanHeadRotateX);
+          snowmanHeadRotateX.addChild(head);
         head.addChild(headTransform);
           headTransform.addChild(headShape);
         head.addChild(eyes);
+
+        // base.addChild(head);
+        // head.addChild(headTransform);
+        //   headTransform.addChild(headShape);
+        // head.addChild(eyes);
 
           eyes.addChild(leftEye);
             leftEye.addChild(leftEyeTransform);
@@ -315,6 +326,10 @@ public class M01_GLEventListener implements GLEventListener {
     if(animateRock){
       rockSnowman();
     }
+
+    if (animateRoll){
+      rollSnowman();
+    }
     // cube.render(gl);
     sceneGraphRoot.draw(gl);
   }
@@ -347,17 +362,17 @@ public class M01_GLEventListener implements GLEventListener {
   }
   private float rotateZ = 0;
   private float rotateX = 0;
-  private final static int ROTATE_Z_MAX = 45;
+  private final static int ROTATE_BASE_MAX = 45;
   private int signZ = 1;
   private int signX = 1;
   private void rockSnowman(){
     double elapsedTime = getSeconds()-startTime;
     
-    if(rotateZ >= ROTATE_Z_MAX) signZ = -1;
-    else if (rotateZ <= -ROTATE_Z_MAX) signZ = 1;
+    if(rotateZ >= ROTATE_BASE_MAX) signZ = -1;
+    else if (rotateZ <= -ROTATE_BASE_MAX) signZ = 1;
 
-    if(rotateX >= ROTATE_Z_MAX) signX = -1;
-    else if (rotateX <= -ROTATE_Z_MAX) signX = 1;
+    if(rotateX >= ROTATE_BASE_MAX) signX = -1;
+    else if (rotateX <= -ROTATE_BASE_MAX) signX = 1;
 
     rotateZ += signZ * Math.abs(0.5f*(float)(Math.sin(Math.toRadians(elapsedTime*10))));
     rotateX += signX * Math.abs(0.5f*(float)(Math.sin(Math.toRadians(elapsedTime*30))));
@@ -368,6 +383,31 @@ public class M01_GLEventListener implements GLEventListener {
     snowmanBaseRotateZ.update();
 
   }
+  private float rotateHeadZ = 0;
+  private float rotateHeadX = 0;
+  private final static int ROTATE_HEAD_MAX = 20;
+  private int signHeadZ = 1;
+  private int signHeadX = 1;
+
+  private void rollSnowman(){
+    double elapsedTime = getSeconds()-startTime;
+    
+    if(rotateHeadZ >= ROTATE_HEAD_MAX) signHeadZ = -1;
+    else if (rotateHeadZ <= -ROTATE_HEAD_MAX) signHeadZ = 1;
+
+    if(rotateHeadX >= ROTATE_HEAD_MAX) signHeadX = -1;
+    else if (rotateHeadX <= -ROTATE_HEAD_MAX) signHeadX = 1;
+
+    rotateHeadZ += signHeadZ * Math.abs(0.2f*(float)(Math.sin(Math.toRadians(elapsedTime*40))));
+    rotateHeadX += signHeadX * Math.abs(0.2f*(float)(Math.sin(Math.toRadians(elapsedTime*40))));
+
+    snowmanHeadRotateZ.setTransform(Mat4Transform.rotateAroundZ(rotateHeadZ));
+    snowmanHeadRotateX.setTransform(Mat4Transform.rotateAroundX(rotateHeadX));
+    snowmanHeadRotateX.update();
+    snowmanHeadRotateZ.update();
+    
+  }
+
 
 
     // ***************************************************
