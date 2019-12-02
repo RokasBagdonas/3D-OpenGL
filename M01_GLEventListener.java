@@ -74,11 +74,13 @@ public class M01_GLEventListener implements GLEventListener {
 
   public void startAnimation() {
     animateSlide = true;
+    animateRock = true;
     startTime = getSeconds()-savedTime;
   }
    
   public void stopAnimation() {
     animateSlide = false;
+    animateRock = false;
     double elapsedTime = getSeconds()-startTime;
     savedTime = elapsedTime;
   }
@@ -98,7 +100,7 @@ public class M01_GLEventListener implements GLEventListener {
   private Light light, worldLight;
   private SGNode sceneGraphRoot;
   private TransformNode snowmanSlideTranslate = new TransformNode("translate(x,0,z);", Mat4Transform.translate(0.0f,0.0f,0.0f));
-
+  private TransformNode snowmanBaseRotate = new TransformNode("rotate(0,0,rotateAroundZ)", Mat4Transform.rotateAroundZ(0));
 
   private void disposeModels(GL3 gl) {
     floor.dispose(gl);
@@ -243,7 +245,8 @@ public class M01_GLEventListener implements GLEventListener {
 
     
     sceneGraphRoot.addChild(snowmanSlideTranslate);
-      snowmanSlideTranslate.addChild(base);
+      snowmanSlideTranslate.addChild(snowmanBaseRotate);
+      snowmanBaseRotate.addChild(base);
       base.addChild(baseTransform);
         baseTransform.addChild(baseShape);
         
@@ -302,6 +305,9 @@ public class M01_GLEventListener implements GLEventListener {
     if (animateSlide){
       slideSnowman();
     }
+    if(animateRock){
+      rockSnowman();
+    }
     // cube.render(gl);
     sceneGraphRoot.draw(gl);
   }
@@ -332,12 +338,20 @@ public class M01_GLEventListener implements GLEventListener {
     snowmanSlideTranslate.setTransform(Mat4Transform.translate(snowmanXPos, 0.0f, 0.0f));
     snowmanSlideTranslate.update();
   }
-  private boolean rotateZ = true;
+  private boolean incRotateZ = true;
   private int rotateAroundZ = 0;
+  private static final int rotateZInc = 2;
   private void rockSnowman(){
-    if (rotateZ){
-      
+    if (incRotateZ){
+      if(rotateAroundZ >= 75) incRotateZ = false;
+      else rotateAroundZ += rotateZInc;
     }
+    if (!incRotateZ){
+      if(rotateAroundZ <= -75) incRotateZ = true;
+      else rotateAroundZ -= rotateZInc;
+    }
+    snowmanBaseRotate.setTransform(Mat4Transform.rotateAroundZ(rotateAroundZ));
+    snowmanBaseRotate.update();
 
   }
 
