@@ -98,6 +98,7 @@ public class M01_GLEventListener implements GLEventListener {
     //cube.dispose(gl);
     sphere.dispose(gl);
     light.dispose(gl);
+    worldLight.dispose(gl);
   }
 
   public void initialise(GL3 gl) {
@@ -121,7 +122,7 @@ public class M01_GLEventListener implements GLEventListener {
     
     worldLight = new Light(gl);
     worldLight.setCamera(camera);
-    worldLight.setPosition(new Vec3(1.5f, 5.0f, 0.6f));
+    worldLight.setPosition(new Vec3(2f, 5.9f, 3f));
     
 
 
@@ -143,8 +144,8 @@ public class M01_GLEventListener implements GLEventListener {
 
     sphere = new Model(gl, camera, light, worldLight, shader, material, modelMatrix, mesh, textureSnow1, textureMud1, textureSnow1Specular);
 
-    button = new Model(gl, camera, light, worldLight, shader, material, modelMatrix, mesh, textureCoal1, textureMud1, textureSnow1Specular);
-    nose = new Model(gl, camera, light, worldLight, shader, material, modelMatrix, mesh, textureWood1, textureMud1, textureSnow1Specular);
+    button = new Model(gl, camera, light, worldLight, shader, material, modelMatrix, mesh, textureCoal1, textureSnow1Specular);
+    nose = new Model(gl, camera, light, worldLight, shader, material, modelMatrix, mesh, textureWood1, textureSnow1Specular);
     
 
     // no texture version

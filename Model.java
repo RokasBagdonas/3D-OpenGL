@@ -21,6 +21,7 @@ public class Model {
   private Light light;
   private Light worldLight;
 
+  //constructor for snowman to have third texture
   public Model(GL3 gl, Camera camera, Light light, Light worldLight, Shader shader, Material material, Mat4 modelMatrix, Mesh mesh, int[] textureId1, int[] textureId2, int[] textureId3) {
     this.mesh = mesh;
     this.material = material;
@@ -32,6 +33,18 @@ public class Model {
     this.textureId1 = textureId1;
     this.textureId2 = textureId2;
     this.textureId3 = textureId3;
+  }
+  //constructor for buttons and wood
+  public Model(GL3 gl, Camera camera, Light light, Light worldLight, Shader shader, Material material, Mat4 modelMatrix, Mesh mesh, int[] textureId1, int[] textureId2) {
+    this.mesh = mesh;
+    this.material = material;
+    this.modelMatrix = modelMatrix;
+    this.shader = shader;
+    this.camera = camera;
+    this.light = light;
+    this.worldLight = worldLight;
+    this.textureId1 = textureId1;
+    this.textureId2 = textureId2;
   }
 
   public Model(GL3 gl, Camera camera, Light light, Shader shader, Material material, Mat4 modelMatrix, Mesh mesh, int[] textureId1, int[] textureId2, int[] textureId3) {
