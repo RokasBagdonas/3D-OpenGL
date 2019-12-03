@@ -101,6 +101,7 @@ public class M01_GLEventListener implements GLEventListener {
   private Model floor, cube, sphere, button, nose;
   private Model circle1, hatTop1, feather;
   private Model metalBox;
+  private Model pole, lamp, platform;
   private Light light, worldLight;
   private SGNode sceneGraphRoot;
   private TransformNode snowmanSlideTranslate = new TransformNode("translate(x,0,z);", Mat4Transform.translate(0.0f,0.0f,0.0f));
@@ -120,6 +121,9 @@ public class M01_GLEventListener implements GLEventListener {
     hatTop1.dispose(gl);
     feather.dispose(gl);
     metalBox.dispose(gl);
+    // pole.dispose(gl);
+    // lamp.dispose(gl);
+    // polePlatform.displose(gl);
   }
 
   public void initialise(GL3 gl) {
@@ -178,10 +182,20 @@ public class M01_GLEventListener implements GLEventListener {
     hatTop1 = new Model(gl, camera, light, worldLight, shader, material, modelMatrix, mesh, textureId3, textureId4);
     feather = new Model(gl, camera, light, worldLight, shader, material, modelMatrix, mesh, textureId3, textureId4);
 
-    //create additional object
+    //create metal box
     material = new Material(new Vec3(1.0f, 0.5f, 0.31f), new Vec3(1.0f, 0.5f, 0.31f), new Vec3(1f, 1f, 1f), 4.0f);
     mesh = new Mesh(gl, Cube.vertices.clone(), Cube.indices.clone());
     metalBox = new Model(gl, camera, light, worldLight, shader, material, modelMatrix, mesh, textureMetal1, textureMetal1Specular);
+    
+    //create spotlight 
+    material = new Material(new Vec3(1.0f, 0.5f, 0.31f), new Vec3(1.0f, 0.5f, 0.31f), new Vec3(0.5f, 0.5f, 0.5f), 50.0f);
+
+    mesh = new Mesh(gl, Cube.vertices.clone(), Cube.indices.clone());
+    platform = new Model(gl, camera, light, worldLight, shader, material, modelMatrix, mesh, textureMetal1, textureMetal1Specular);
+
+    mesh = new Mesh(gl, Sphere.vertices.clone(), Sphere.indices.clone());
+    pole = new Model(gl, camera, light, worldLight, shader, material, modelMatrix, mesh, textureMetal1, textureMetal1Specular);
+    lamp = new Model(gl, camera, light, worldLight, shader, material, modelMatrix, mesh, textureMetal1, textureMetal1Specular);
     
      
 
@@ -303,9 +317,44 @@ public class M01_GLEventListener implements GLEventListener {
     //metal object ----------------------------------
     NameNode box = new NameNode("metal box");
       m = Mat4Transform.scale(1f, 3.5f, 1f);
-      m = Mat4.multiply(Mat4Transform.translate(1.5f, 0.0f, 1.5f), m);
+      m = Mat4.multiply(Mat4Transform.translate(1.5f, 1.75f, 1.5f), m);
       TransformNode boxTransform = new TransformNode("translate(1.5f, 0.0f, 1.5f); scale(1f, 3.5f, 1f);", m );
       ModelNode boxShape = new ModelNode("metal box (cube)", metalBox);
+
+    
+    //spotlight ---------------------------------------
+    //intial translate matrix to position both elements at the same spot
+    NameNode spotlight = new NameNode("spotlight");
+    m = Mat4Transform.translate(-3.5f, 0.0f, 2.8f);
+    TransformNode spotlightTranslate = new TransformNode("translate(-3.5f, 3f, 2.8f);", m);
+
+    //pole platform
+
+    NameNode spotlightPlatform = new NameNode("spotlight platform");
+      m = Mat4Transform.scale(1.4f, 0.3f, 1.4f);
+      TransformNode platformScale = new TransformNode("scale(1.8f, 0.2f, 1.8f);", m);
+      ModelNode platformShape = new ModelNode("spotlight platform (cube)", platform);
+
+    //pole
+    TransformNode poleTranslate = new TransformNode("name", Mat4Transform.translate(0.0f, 4f, 0.0f));
+
+    NameNode spotlightPole = new NameNode("spotlight pole");
+      m = Mat4Transform.scale(0.5f, 10f, 0.5f);
+      TransformNode poleScale = new TransformNode("scale(0.5f, 6f, 0.5f);", m);
+      ModelNode poleShape = new ModelNode("spotlight pole (sphere)", pole);
+
+    sceneGraphRoot.addChild(spotlight);
+      spotlight.addChild(spotlightTranslate);
+        spotlightTranslate.addChild(spotlightPlatform);
+          spotlightPlatform.addChild(platformScale);
+            platformScale.addChild(platformShape);
+
+        
+        spotlightTranslate.addChild(poleTranslate);
+          poleTranslate.addChild(spotlightPole);
+            spotlightPole.addChild(poleScale);
+              poleScale.addChild(poleShape);
+    
 
 
 
