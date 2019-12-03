@@ -73,7 +73,7 @@ public class M01_GLEventListener implements GLEventListener {
 
 
   public void startAnimation() {
-    //animateSlide = true;
+    animateSlide = true;
     animateRock = true;
     animateRoll = true;
     startTime = getSeconds()-savedTime;
@@ -99,6 +99,7 @@ public class M01_GLEventListener implements GLEventListener {
   private Camera camera;
   private Mat4 perspective; // ?
   private Model floor, cube, sphere, button, nose;
+  private Model circle1, hatTop1, circle3, ball;
   private Light light, worldLight;
   private SGNode sceneGraphRoot;
   private TransformNode snowmanSlideTranslate = new TransformNode("translate(x,0,z);", Mat4Transform.translate(0.0f,0.0f,0.0f));
@@ -162,6 +163,11 @@ public class M01_GLEventListener implements GLEventListener {
     button = new Model(gl, camera, light, worldLight, shader, material, modelMatrix, mesh, textureCoal1, textureSnow1Specular);
     nose = new Model(gl, camera, light, worldLight, shader, material, modelMatrix, mesh, textureWood1, textureSnow1Specular);
     
+    //create hat
+    material = new Material(new Vec3(1.0f, 0.5f, 0.31f), new Vec3(1.0f, 0.5f, 0.31f), new Vec3(0.3f, 0.3f, 0.3f), 60.0f);
+    circle1 = new Model(gl, camera, light, worldLight, shader, material, modelMatrix, mesh, textureId3, textureId4);
+    hatTop1 = new Model(gl, camera, light, worldLight, shader, material, modelMatrix, mesh, textureId3, textureId4);
+     
 
     // no texture version
     // sphere = new Model(gl, camera, light, shader, material, modelMatrix, mesh);
@@ -248,6 +254,20 @@ public class M01_GLEventListener implements GLEventListener {
       TransformNode mouthTransform = new TransformNode("scale(0.3f, 0.3f, 0.5f); translate(0.0f, 4f, 1f);", m);
       ModelNode mouthShape = new ModelNode("mouth (sphere - mouth)", nose);
 
+    //hat Nodes 
+    TransformNode hatInitialTransfrom = new TransformNode("translate(0.0f,5f, 0.0f)", Mat4Transform.translate(0.0f, 5f, 0.0f));
+
+    NameNode hatCircle1 = new NameNode("hatCircle1");
+      m = Mat4Transform.scale(2f,0.5f,2f);
+      // m = Mat4.multiply(Mat4Transform.translate(0.0f, 5f, 0.0f), m);
+      TransformNode hatCircle1Transform = new TransformNode("scale(2f,0.5f,2f);;", m);
+      ModelNode hatCircle1Shape = new ModelNode("base hat (sphere - circle1)", circle1);
+
+    NameNode hatTop = new NameNode("hatTop");
+      m = Mat4Transform.scale(1.2f,1.2f,1.2f);
+      m = Mat4.multiply(Mat4Transform.translate(0.0f, 0.2f, 0.0f), m);
+      TransformNode hatTopTransform = new TransformNode("translate(0.0f, 0.2f, 0.0f); scale(1.2f,1.2f,1.2f);", m);
+      ModelNode hatTopShape = new ModelNode("hat top (sphere)", hatTop1);
 
     
     sceneGraphRoot.addChild(snowmanSlideTranslate);
@@ -268,11 +288,6 @@ public class M01_GLEventListener implements GLEventListener {
           headTransform.addChild(headShape);
         head.addChild(eyes);
 
-        // base.addChild(head);
-        // head.addChild(headTransform);
-        //   headTransform.addChild(headShape);
-        // head.addChild(eyes);
-
           eyes.addChild(leftEye);
             leftEye.addChild(leftEyeTransform);
               leftEyeTransform.addChild(leftEyeShape);
@@ -287,6 +302,14 @@ public class M01_GLEventListener implements GLEventListener {
         head.addChild(mouth);
           mouth.addChild(mouthTransform);
             mouthTransform.addChild(mouthShape);
+
+        head.addChild(hatInitialTransfrom); //used to set same starting position for all the elements
+        hatInitialTransfrom.addChild(hatCircle1);
+          hatCircle1.addChild(hatCircle1Transform);
+            hatCircle1Transform.addChild(hatCircle1Shape);
+          hatCircle1.addChild(hatTop);
+            hatTop.addChild(hatTopTransform);
+              hatTopTransform.addChild(hatTopShape);
 
       base.addChild(buttons);
       buttons.addChild(initialButtonTransfom);
@@ -374,8 +397,8 @@ public class M01_GLEventListener implements GLEventListener {
     if(rotateX >= ROTATE_BASE_MAX) signX = -1;
     else if (rotateX <= -ROTATE_BASE_MAX) signX = 1;
 
-    rotateZ += signZ * Math.abs(0.5f*(float)(Math.sin(Math.toRadians(elapsedTime*10))));
-    rotateX += signX * Math.abs(0.5f*(float)(Math.sin(Math.toRadians(elapsedTime*30))));
+    rotateZ += signZ * Math.abs(0.6f*(float)(Math.sin(Math.toRadians(elapsedTime*30))));
+    rotateX += signX * Math.abs(0.6f*(float)(Math.sin(Math.toRadians(elapsedTime*30))));
 
     snowmanBaseRotateZ.setTransform(Mat4Transform.rotateAroundZ(rotateZ));
     snowmanBaseRotateX.setTransform(Mat4Transform.rotateAroundX(rotateX));
