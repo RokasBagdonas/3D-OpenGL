@@ -99,7 +99,7 @@ public class M01_GLEventListener implements GLEventListener {
   private Camera camera;
   private Mat4 perspective; // ?
   private Model floor, cube, sphere, button, nose;
-  private Model circle1, hatTop1, circle3, ball;
+  private Model circle1, hatTop1, feather;
   private Light light, worldLight;
   private SGNode sceneGraphRoot;
   private TransformNode snowmanSlideTranslate = new TransformNode("translate(x,0,z);", Mat4Transform.translate(0.0f,0.0f,0.0f));
@@ -167,6 +167,7 @@ public class M01_GLEventListener implements GLEventListener {
     material = new Material(new Vec3(1.0f, 0.5f, 0.31f), new Vec3(1.0f, 0.5f, 0.31f), new Vec3(0.3f, 0.3f, 0.3f), 60.0f);
     circle1 = new Model(gl, camera, light, worldLight, shader, material, modelMatrix, mesh, textureId3, textureId4);
     hatTop1 = new Model(gl, camera, light, worldLight, shader, material, modelMatrix, mesh, textureId3, textureId4);
+    feather = new Model(gl, camera, light, worldLight, shader, material, modelMatrix, mesh, textureId3, textureId4);
      
 
     // no texture version
@@ -259,15 +260,32 @@ public class M01_GLEventListener implements GLEventListener {
 
     NameNode hatCircle1 = new NameNode("hatCircle1");
       m = Mat4Transform.scale(2f,0.5f,2f);
-      // m = Mat4.multiply(Mat4Transform.translate(0.0f, 5f, 0.0f), m);
       TransformNode hatCircle1Transform = new TransformNode("scale(2f,0.5f,2f);;", m);
       ModelNode hatCircle1Shape = new ModelNode("base hat (sphere - circle1)", circle1);
 
     NameNode hatTop = new NameNode("hatTop");
-      m = Mat4Transform.scale(1.2f,1.2f,1.2f);
+      m = Mat4Transform.scale(1.4f,1.4f,1.4f);
       m = Mat4.multiply(Mat4Transform.translate(0.0f, 0.2f, 0.0f), m);
       TransformNode hatTopTransform = new TransformNode("translate(0.0f, 0.2f, 0.0f); scale(1.2f,1.2f,1.2f);", m);
       ModelNode hatTopShape = new ModelNode("hat top (sphere)", hatTop1);
+
+      //feather initial transform
+      Mat4 featherM = Mat4Transform.scale(0.3f,0.8f,0.1f);
+      featherM = Mat4.multiply(Mat4Transform.rotateAroundY(90), featherM);
+      featherM = Mat4.multiply(Mat4Transform.rotateAroundX(-45), featherM);
+      NameNode feathers = new NameNode("feathers");
+    
+    NameNode featherRight = new NameNode("featherRight");
+      m = Mat4.multiply(Mat4Transform.translate(0.7f, 0.4f, 0.0f), featherM);
+      TransformNode featherRightTranslate = new TransformNode("translate(0.7f, 0.4f, 0.0f);", m);
+      ModelNode featherRightShape = new ModelNode("feahter right (sphere)", feather);
+
+    NameNode featherLeft = new NameNode("featherLeft");
+      m = Mat4.multiply(Mat4Transform.translate(-0.7f, 0.4f, 0.0f), featherM);
+      TransformNode featherLeftTranslate = new TransformNode("translate(-0.7f, 0.4f, 0.0f);", m);
+      ModelNode featherLeftShape = new ModelNode("feahter left (sphere)", feather);
+
+
 
     
     sceneGraphRoot.addChild(snowmanSlideTranslate);
@@ -310,6 +328,14 @@ public class M01_GLEventListener implements GLEventListener {
           hatCircle1.addChild(hatTop);
             hatTop.addChild(hatTopTransform);
               hatTopTransform.addChild(hatTopShape);
+
+            hatTop.addChild(feathers);
+              feathers.addChild(featherRight);
+                featherRight.addChild(featherRightTranslate);
+                featherRightTranslate.addChild(featherRightShape);
+              feathers.addChild(featherLeft);
+                featherLeft.addChild(featherLeftTranslate);
+                featherLeftTranslate.addChild(featherLeftShape);
 
       base.addChild(buttons);
       buttons.addChild(initialButtonTransfom);
