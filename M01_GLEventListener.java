@@ -343,6 +343,13 @@ public class M01_GLEventListener implements GLEventListener {
       TransformNode poleScale = new TransformNode("scale(0.5f, 6f, 0.5f);", m);
       ModelNode poleShape = new ModelNode("spotlight pole (sphere)", pole);
 
+    NameNode spotlightLamp = new NameNode("spotlight lamp");
+      m = Mat4Transform.scale(0.4f, 1.7f, 0.4f);
+      m = Mat4.multiply(Mat4Transform.rotateAroundZ(-120), m);
+      m = Mat4.multiply(Mat4Transform.translate(0.3f, 4.8f, 0.0f), m);
+      TransformNode lampTransform = new TransformNode("translate(0.0f, 14f, 0.0f); rotateAroundZ(-120); scale(0.3f, 1.5f, 0.3f);", m);
+      ModelNode lampShape = new ModelNode("spotlight lamp (sphere)", lamp);
+
     sceneGraphRoot.addChild(spotlight);
       spotlight.addChild(spotlightTranslate);
         spotlightTranslate.addChild(spotlightPlatform);
@@ -354,6 +361,11 @@ public class M01_GLEventListener implements GLEventListener {
           poleTranslate.addChild(spotlightPole);
             spotlightPole.addChild(poleScale);
               poleScale.addChild(poleShape);
+
+          poleTranslate.addChild(spotlightLamp);
+          spotlightLamp.addChild(lampTransform);
+            lampTransform.addChild(lampShape);
+
     
 
 
