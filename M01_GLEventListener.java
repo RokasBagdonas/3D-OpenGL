@@ -102,7 +102,7 @@ public class M01_GLEventListener implements GLEventListener {
   private Model circle1, hatTop1, feather;
   private Model metalBox;
   private Model pole, lamp, platform;
-  private Light light, worldLight;
+  private Light spotLight, worldLight;
   private SGNode sceneGraphRoot;
   private TransformNode snowmanSlideTranslate = new TransformNode("translate(x,0,z);", Mat4Transform.translate(0.0f,0.0f,0.0f));
   private TransformNode snowmanBaseRotateZ = new TransformNode("base rotate(0,0,rotateZ)", Mat4Transform.rotateAroundZ(0));
@@ -115,7 +115,7 @@ public class M01_GLEventListener implements GLEventListener {
     floor.dispose(gl);
     //cube.dispose(gl);
     sphere.dispose(gl);
-    light.dispose(gl);
+    spotLight.dispose(gl);
     worldLight.dispose(gl);
     circle1.dispose(gl);
     hatTop1.dispose(gl);
@@ -145,9 +145,9 @@ public class M01_GLEventListener implements GLEventListener {
     // https://opengameart.org/content/metalstone-textures 
     int[] textureMetal1 = TextureLibrary.loadTexture(gl, "textures/mtl_wall01_c.jpg");
     int[] textureMetal1Specular = TextureLibrary.loadTexture(gl, "textures/mtl_wall01_s.jpg");
-    //setup light
-    light = new Light(gl);
-    light.setCamera(camera);
+    //setup spotLight
+    spotLight = new Light(gl);
+    spotLight.setCamera(camera);
     
     worldLight = new Light(gl);
     worldLight.setCamera(camera);
@@ -163,7 +163,7 @@ public class M01_GLEventListener implements GLEventListener {
     Shader shader = new Shader(gl, "vs_tt_05.txt", "fs_tt_05.txt");
     Material material = new Material(new Vec3(0.0f, 0.5f, 0.81f), new Vec3(0.0f, 0.5f, 0.81f), new Vec3(0.3f, 0.3f, 0.3f), 32.0f);
     Mat4 modelMatrix = Mat4Transform.scale(16,1f,16);
-    floor = new Model(gl, camera, light, worldLight, shader, material, modelMatrix, mesh, textureId0, textureMud1, textureSnow1Specular);
+    floor = new Model(gl, camera, spotLight, worldLight, shader, material, modelMatrix, mesh, textureId0, textureMud1, textureSnow1Specular);
 
     //create snowman model
     mesh = new Mesh(gl, Sphere.vertices.clone(), Sphere.indices.clone());
@@ -171,36 +171,36 @@ public class M01_GLEventListener implements GLEventListener {
 
     material = new Material(new Vec3(1.0f, 0.5f, 0.31f), new Vec3(1.0f, 0.5f, 0.31f), new Vec3(0.8f, 0.8f, 0.8f), 15.0f);
 
-    sphere = new Model(gl, camera, light, worldLight, shader, material, modelMatrix, mesh, textureSnow1, textureMud1, textureSnow1Specular);
+    sphere = new Model(gl, camera, spotLight, worldLight, shader, material, modelMatrix, mesh, textureSnow1, textureMud1, textureSnow1Specular);
 
-    button = new Model(gl, camera, light, worldLight, shader, material, modelMatrix, mesh, textureCoal1, textureSnow1Specular);
-    nose = new Model(gl, camera, light, worldLight, shader, material, modelMatrix, mesh, textureWood1, textureSnow1Specular);
+    button = new Model(gl, camera, spotLight, worldLight, shader, material, modelMatrix, mesh, textureCoal1, textureSnow1Specular);
+    nose = new Model(gl, camera, spotLight, worldLight, shader, material, modelMatrix, mesh, textureWood1, textureSnow1Specular);
     
     //create hat
     material = new Material(new Vec3(1.0f, 0.5f, 0.31f), new Vec3(1.0f, 0.5f, 0.31f), new Vec3(0.3f, 0.3f, 0.3f), 60.0f);
-    circle1 = new Model(gl, camera, light, worldLight, shader, material, modelMatrix, mesh, textureId3, textureId4);
-    hatTop1 = new Model(gl, camera, light, worldLight, shader, material, modelMatrix, mesh, textureId3, textureId4);
-    feather = new Model(gl, camera, light, worldLight, shader, material, modelMatrix, mesh, textureId3, textureId4);
+    circle1 = new Model(gl, camera, spotLight, worldLight, shader, material, modelMatrix, mesh, textureId3, textureId4);
+    hatTop1 = new Model(gl, camera, spotLight, worldLight, shader, material, modelMatrix, mesh, textureId3, textureId4);
+    feather = new Model(gl, camera, spotLight, worldLight, shader, material, modelMatrix, mesh, textureId3, textureId4);
 
     //create metal box
     material = new Material(new Vec3(1.0f, 0.5f, 0.31f), new Vec3(1.0f, 0.5f, 0.31f), new Vec3(1f, 1f, 1f), 4.0f);
     mesh = new Mesh(gl, Cube.vertices.clone(), Cube.indices.clone());
-    metalBox = new Model(gl, camera, light, worldLight, shader, material, modelMatrix, mesh, textureMetal1, textureMetal1Specular);
+    metalBox = new Model(gl, camera, spotLight, worldLight, shader, material, modelMatrix, mesh, textureMetal1, textureMetal1Specular);
     
     //create spotlight 
     material = new Material(new Vec3(1.0f, 0.5f, 0.31f), new Vec3(1.0f, 0.5f, 0.31f), new Vec3(0.5f, 0.5f, 0.5f), 50.0f);
 
     mesh = new Mesh(gl, Cube.vertices.clone(), Cube.indices.clone());
-    platform = new Model(gl, camera, light, worldLight, shader, material, modelMatrix, mesh, textureMetal1, textureMetal1Specular);
+    platform = new Model(gl, camera, spotLight, worldLight, shader, material, modelMatrix, mesh, textureMetal1, textureMetal1Specular);
 
     mesh = new Mesh(gl, Sphere.vertices.clone(), Sphere.indices.clone());
-    pole = new Model(gl, camera, light, worldLight, shader, material, modelMatrix, mesh, textureMetal1, textureMetal1Specular);
-    lamp = new Model(gl, camera, light, worldLight, shader, material, modelMatrix, mesh, textureMetal1, textureMetal1Specular);
+    pole = new Model(gl, camera, spotLight, worldLight, shader, material, modelMatrix, mesh, textureMetal1, textureMetal1Specular);
+    lamp = new Model(gl, camera, spotLight, worldLight, shader, material, modelMatrix, mesh, textureMetal1, textureMetal1Specular);
     
      
 
     // no texture version
-    // sphere = new Model(gl, camera, light, shader, material, modelMatrix, mesh);
+    // sphere = new Model(gl, camera, spotLight, shader, material, modelMatrix, mesh);
 
     //create snowman scene graph
     sceneGraphRoot = new NameNode("Scene graph: snowman");
@@ -451,25 +451,20 @@ public class M01_GLEventListener implements GLEventListener {
   private void render(GL3 gl) {
     gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
 
-    light.setPosition(getLightPosition());  // changing light position each frame
-    light.render(gl);
+    // spotLight.setPosition(getLightPosition());  // changing spotLight position each frame
+    spotLight.render(gl);
     worldLight.render(gl);
     floor.render(gl);
-    if (animateSlide){
-      slideSnowman();
-    }
-    if(animateRock){
-      rockSnowman();
-    }
 
-    if (animateRoll){
-      rollSnowman();
-    }
+    if (animateSlide) slideSnowman();
+    if(animateRock) rockSnowman();
+    if (animateRoll) rollSnowman();
+      
     // cube.render(gl);
     sceneGraphRoot.draw(gl);
   }
 
-  // The light's postion is continually being changed, so needs to be calculated for each frame.
+  // The spotLight's postion is continually being changed, so needs to be calculated for each frame.
   private Vec3 getLightPosition() {
     double elapsedTime = getSeconds()-startTime;
     float x = 5.0f*(float)(Math.sin(Math.toRadians(elapsedTime*50)));
