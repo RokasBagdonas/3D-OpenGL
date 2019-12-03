@@ -179,7 +179,7 @@ public class M01_GLEventListener implements GLEventListener {
     feather = new Model(gl, camera, light, worldLight, shader, material, modelMatrix, mesh, textureId3, textureId4);
 
     //create additional object
-    material = new Material(new Vec3(1.0f, 0.5f, 0.31f), new Vec3(1.0f, 0.5f, 0.31f), new Vec3(0.9f, 0.9f, 0.9f), 8.0f);
+    material = new Material(new Vec3(1.0f, 0.5f, 0.31f), new Vec3(1.0f, 0.5f, 0.31f), new Vec3(1f, 1f, 1f), 4.0f);
     mesh = new Mesh(gl, Cube.vertices.clone(), Cube.indices.clone());
     metalBox = new Model(gl, camera, light, worldLight, shader, material, modelMatrix, mesh, textureMetal1, textureMetal1Specular);
     
@@ -292,12 +292,12 @@ public class M01_GLEventListener implements GLEventListener {
     
     NameNode featherRight = new NameNode("featherRight");
       m = Mat4.multiply(Mat4Transform.translate(0.7f, 0.4f, 0.0f), featherM);
-      TransformNode featherRightTranslate = new TransformNode("translate(0.7f, 0.4f, 0.0f); rotateAroundX(-45); rotateAroundY(90);  scale(0.3f,0.8f,0.1f);", m);
+      TransformNode featherRightTransform = new TransformNode("translate(0.7f, 0.4f, 0.0f); rotateAroundX(-45); rotateAroundY(90);  scale(0.3f,0.8f,0.1f);", m);
       ModelNode featherRightShape = new ModelNode("feahter right (sphere)", feather);
 
     NameNode featherLeft = new NameNode("featherLeft");
       m = Mat4.multiply(Mat4Transform.translate(-0.7f, 0.4f, 0.0f), featherM);
-      TransformNode featherLeftTranslate = new TransformNode("translate(-0.7f, 0.4f, 0.0f); rotateAroundX(-45); rotateAroundY(90);  scale(0.3f,0.8f,0.1f);", m);
+      TransformNode featherLeftTransform = new TransformNode("translate(-0.7f, 0.4f, 0.0f); rotateAroundX(-45); rotateAroundY(90);  scale(0.3f,0.8f,0.1f);", m);
       ModelNode featherLeftShape = new ModelNode("feahter left (sphere)", feather);
 
     //metal object ----------------------------------
@@ -353,11 +353,11 @@ public class M01_GLEventListener implements GLEventListener {
 
             hatTop.addChild(feathers);
               feathers.addChild(featherRight);
-                featherRight.addChild(featherRightTranslate);
-                featherRightTranslate.addChild(featherRightShape);
+                featherRight.addChild(featherRightTransform);
+                featherRightTransform.addChild(featherRightShape);
               feathers.addChild(featherLeft);
-                featherLeft.addChild(featherLeftTranslate);
-                featherLeftTranslate.addChild(featherLeftShape);
+                featherLeft.addChild(featherLeftTransform);
+                featherLeftTransform.addChild(featherLeftShape);
 
       base.addChild(buttons);
       buttons.addChild(initialButtonTransfom);
