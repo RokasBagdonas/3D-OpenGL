@@ -100,6 +100,7 @@ public class M01_GLEventListener implements GLEventListener {
   private Mat4 perspective; // ?
   private Model floor, cube, sphere, button, nose;
   private Model circle1, hatTop1, feather;
+  private Model metalBox;
   private Light light, worldLight;
   private SGNode sceneGraphRoot;
   private TransformNode snowmanSlideTranslate = new TransformNode("translate(x,0,z);", Mat4Transform.translate(0.0f,0.0f,0.0f));
@@ -115,6 +116,10 @@ public class M01_GLEventListener implements GLEventListener {
     sphere.dispose(gl);
     light.dispose(gl);
     worldLight.dispose(gl);
+    circle1.dispose(gl);
+    hatTop1.dispose(gl);
+    feather.dispose(gl);
+    metalBox.dispose(gl);
   }
 
   public void initialise(GL3 gl) {
@@ -132,6 +137,10 @@ public class M01_GLEventListener implements GLEventListener {
     int[] textureWood1 = TextureLibrary.loadTexture(gl, "textures/wood1.jpg");
     //"mud" texture: https://images.app.goo.gl/CwZs72esA97AFNiv8 
     int[] textureMud1 = TextureLibrary.loadTexture(gl, "textures/coffeeStains1.jpg");
+
+    // https://opengameart.org/content/metalstone-textures 
+    int[] textureMetal1 = TextureLibrary.loadTexture(gl, "textures/mtl_wall01_c.jpg");
+    int[] textureMetal1Specular = TextureLibrary.loadTexture(gl, "textures/mtl_wall01_s.jpg");
     //setup light
     light = new Light(gl);
     light.setCamera(camera);
@@ -168,6 +177,12 @@ public class M01_GLEventListener implements GLEventListener {
     circle1 = new Model(gl, camera, light, worldLight, shader, material, modelMatrix, mesh, textureId3, textureId4);
     hatTop1 = new Model(gl, camera, light, worldLight, shader, material, modelMatrix, mesh, textureId3, textureId4);
     feather = new Model(gl, camera, light, worldLight, shader, material, modelMatrix, mesh, textureId3, textureId4);
+
+    //create additional object
+    material = new Material(new Vec3(1.0f, 0.5f, 0.31f), new Vec3(1.0f, 0.5f, 0.31f), new Vec3(0.9f, 0.9f, 0.9f), 8.0f);
+    mesh = new Mesh(gl, Cube.vertices.clone(), Cube.indices.clone());
+    metalBox = new Model(gl, camera, light, worldLight, shader, material, modelMatrix, mesh, textureMetal1, textureMetal1Specular);
+    
      
 
     // no texture version
@@ -255,7 +270,7 @@ public class M01_GLEventListener implements GLEventListener {
       TransformNode mouthTransform = new TransformNode("scale(0.3f, 0.3f, 0.5f); translate(0.0f, 4f, 1f);", m);
       ModelNode mouthShape = new ModelNode("mouth (sphere - mouth)", nose);
 
-    //hat Nodes 
+    //hat Nodes -----------------------------------
     TransformNode hatInitialTransfrom = new TransformNode("translate(0.0f,5f, 0.0f)", Mat4Transform.translate(0.0f, 5f, 0.0f));
 
     NameNode hatCircle1 = new NameNode("hatCircle1");
@@ -269,7 +284,7 @@ public class M01_GLEventListener implements GLEventListener {
       TransformNode hatTopTransform = new TransformNode("translate(0.0f, 0.2f, 0.0f); scale(1.2f,1.2f,1.2f);", m);
       ModelNode hatTopShape = new ModelNode("hat top (sphere)", hatTop1);
 
-      //feather initial transform
+      //feather initial transform ---------------------------------
       Mat4 featherM = Mat4Transform.scale(0.3f,0.8f,0.1f);
       featherM = Mat4.multiply(Mat4Transform.rotateAroundY(90), featherM);
       featherM = Mat4.multiply(Mat4Transform.rotateAroundX(-45), featherM);
@@ -277,17 +292,23 @@ public class M01_GLEventListener implements GLEventListener {
     
     NameNode featherRight = new NameNode("featherRight");
       m = Mat4.multiply(Mat4Transform.translate(0.7f, 0.4f, 0.0f), featherM);
-      TransformNode featherRightTranslate = new TransformNode("translate(0.7f, 0.4f, 0.0f);", m);
+      TransformNode featherRightTranslate = new TransformNode("translate(0.7f, 0.4f, 0.0f); rotateAroundX(-45); rotateAroundY(90);  scale(0.3f,0.8f,0.1f);", m);
       ModelNode featherRightShape = new ModelNode("feahter right (sphere)", feather);
 
     NameNode featherLeft = new NameNode("featherLeft");
       m = Mat4.multiply(Mat4Transform.translate(-0.7f, 0.4f, 0.0f), featherM);
-      TransformNode featherLeftTranslate = new TransformNode("translate(-0.7f, 0.4f, 0.0f);", m);
+      TransformNode featherLeftTranslate = new TransformNode("translate(-0.7f, 0.4f, 0.0f); rotateAroundX(-45); rotateAroundY(90);  scale(0.3f,0.8f,0.1f);", m);
       ModelNode featherLeftShape = new ModelNode("feahter left (sphere)", feather);
 
+    //metal object ----------------------------------
+    NameNode box = new NameNode("metal box");
+      m = Mat4Transform.scale(1f, 3.5f, 1f);
+      m = Mat4.multiply(Mat4Transform.translate(1.5f, 0.0f, 1.5f), m);
+      TransformNode boxTransform = new TransformNode("translate(1.5f, 0.0f, 1.5f); scale(1f, 3.5f, 1f);", m );
+      ModelNode boxShape = new ModelNode("metal box (cube)", metalBox);
 
 
-    
+
     sceneGraphRoot.addChild(snowmanSlideTranslate);
       //slide
       snowmanSlideTranslate.addChild(snowmanBaseRotateZ);
@@ -298,7 +319,8 @@ public class M01_GLEventListener implements GLEventListener {
       //snowman
       base.addChild(baseTransform);
         baseTransform.addChild(baseShape);
-        
+
+        //roll
         base.addChild(snowmanHeadRotateZ);
           snowmanHeadRotateZ.addChild(snowmanHeadRotateX);
           snowmanHeadRotateX.addChild(head);
@@ -348,10 +370,13 @@ public class M01_GLEventListener implements GLEventListener {
             topButtonTransform.addChild(topButton);
               topButton.addChild(topButtonShape);
 
-    
-    
-    
+      sceneGraphRoot.addChild(box);
+        box.addChild(boxTransform);
+          boxTransform.addChild(boxShape);
 
+
+    
+    
 
 
     sceneGraphRoot.update();
@@ -456,9 +481,6 @@ public class M01_GLEventListener implements GLEventListener {
     snowmanHeadRotateZ.update();
     
   }
-
-
-
     // ***************************************************
   /* TIME
    */
