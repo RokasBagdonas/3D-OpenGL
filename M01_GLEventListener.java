@@ -499,11 +499,11 @@ public class M01_GLEventListener implements GLEventListener {
   private void slideSnowman() {
     if(incX){
       if(snowmanXPos > 4.0f) incX = false;
-      else snowmanXPos += 0.05f;
+      else snowmanXPos += 0.02f;
     }
     else if(!incX){
       if(snowmanXPos < -4.0f) incX = true;
-      else snowmanXPos -= 0.05f;  
+      else snowmanXPos -= 0.02f;  
     }
 
     snowmanSlideTranslate.setTransform(Mat4Transform.translate(snowmanXPos, 0.0f, 0.0f));
@@ -511,7 +511,7 @@ public class M01_GLEventListener implements GLEventListener {
   }
   private float rotateZ = 0;
   private float rotateX = 0;
-  private final static int ROTATE_BASE_MAX = 45;
+  private final static int ROTATE_BASE_MAX = 25;
   private int signZ = 1;
   private int signX = 1;
   private void rockSnowman(){
@@ -523,8 +523,8 @@ public class M01_GLEventListener implements GLEventListener {
     if(rotateX >= ROTATE_BASE_MAX) signX = -1;
     else if (rotateX <= -ROTATE_BASE_MAX) signX = 1;
 
-    rotateZ += signZ * Math.abs(0.6f*(float)(Math.sin(Math.toRadians(elapsedTime*30))));
-    rotateX += signX * Math.abs(0.6f*(float)(Math.sin(Math.toRadians(elapsedTime*30))));
+    rotateZ += signZ * Math.abs(0.6f*(float)(Math.sin(Math.toRadians(elapsedTime*8))));
+    rotateX += signX * Math.abs(0.6f*(float)(Math.sin(Math.toRadians(elapsedTime*12))));
 
     snowmanBaseRotateZ.setTransform(Mat4Transform.rotateAroundZ(rotateZ));
     snowmanBaseRotateX.setTransform(Mat4Transform.rotateAroundX(rotateX));
@@ -534,7 +534,7 @@ public class M01_GLEventListener implements GLEventListener {
   }
   private float rotateHeadZ = 0;
   private float rotateHeadX = 0;
-  private final static int ROTATE_HEAD_MAX = 20;
+  private final static int ROTATE_HEAD_MAX = 10;
   private int signHeadZ = 1;
   private int signHeadX = 1;
 
@@ -547,8 +547,8 @@ public class M01_GLEventListener implements GLEventListener {
     if(rotateHeadX >= ROTATE_HEAD_MAX) signHeadX = -1;
     else if (rotateHeadX <= -ROTATE_HEAD_MAX) signHeadX = 1;
 
-    rotateHeadZ += signHeadZ * Math.abs(0.2f*(float)(Math.sin(Math.toRadians(elapsedTime*40))));
-    rotateHeadX += signHeadX * Math.abs(0.2f*(float)(Math.sin(Math.toRadians(elapsedTime*40))));
+    rotateHeadZ += signHeadZ * Math.abs(0.4f*(float)(Math.sin(Math.toRadians(elapsedTime*12))));
+    rotateHeadX += signHeadX * Math.abs(0.4f*(float)(Math.sin(Math.toRadians(elapsedTime*8))));
 
     snowmanHeadRotateZ.setTransform(Mat4Transform.rotateAroundZ(rotateHeadZ));
     snowmanHeadRotateX.setTransform(Mat4Transform.rotateAroundX(rotateHeadX));
