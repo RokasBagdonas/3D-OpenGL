@@ -7,7 +7,7 @@ import com.jogamp.opengl.awt.GLCanvas;
 import com.jogamp.opengl.util.FPSAnimator;
 /**
  * Rokas Bagdonas rbagdonas1@sheffield.ac.uk
- * I have used the code form M0X tutorials.
+ * The code was built on top of M0X tutorials
  */
 
 public class Main extends JFrame implements ActionListener {
@@ -63,6 +63,9 @@ public class Main extends JFrame implements ActionListener {
       b = new JButton("reset snowman");
       b.addActionListener(this);
       p.add(b);
+      b = new JButton("spinning light");
+      b.addActionListener(this);
+      p.add(b);
       
     this.add(p, BorderLayout.SOUTH);
     addWindowListener(new WindowAdapter() {
@@ -78,7 +81,7 @@ public class Main extends JFrame implements ActionListener {
   }
 
 
-
+  //button interactions
   public void actionPerformed(ActionEvent e) {
     if (e.getActionCommand().equalsIgnoreCase("slide")) {
       this.glEventListener.animateSlide = !this.glEventListener.animateSlide;
@@ -96,6 +99,9 @@ public class Main extends JFrame implements ActionListener {
     }
     else if (e.getActionCommand().equalsIgnoreCase("reset snowman")) {
       this.glEventListener.resetSnowman();
+    }
+    else if (e.getActionCommand().equalsIgnoreCase("spinning light")) {
+      this.glEventListener.animateLight = !this.glEventListener.animateLight;
     }
     else if(e.getActionCommand().equalsIgnoreCase("quit"))
       System.exit(0);

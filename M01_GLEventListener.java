@@ -68,6 +68,7 @@ public class M01_GLEventListener implements GLEventListener {
   public boolean animateSlide = false;
   public boolean animateRock = false;
   public boolean animateRoll = false;
+  public boolean animateLight = true;
   private float snowmanXPos = 0.0f;
   private float snowmanZPos = 0.0f;
 
@@ -76,6 +77,7 @@ public class M01_GLEventListener implements GLEventListener {
     animateSlide = true;
     animateRock = true;
     animateRoll = true;
+    animateLight = true;
     startTime = getSeconds()-savedTime;
   }
    
@@ -83,6 +85,7 @@ public class M01_GLEventListener implements GLEventListener {
     animateSlide = false;
     animateRock = false;
     animateRoll = false;
+    animateLight = false;
     double elapsedTime = getSeconds()-startTime;
     savedTime = elapsedTime;
   }
@@ -97,14 +100,16 @@ public class M01_GLEventListener implements GLEventListener {
    */
 
   private Camera camera;
-  private Mat4 perspective; // ?
+  private Mat4 perspective;
   private Model floor, wall, cube, sphere, button, nose;
-  private Model circle1, hatTop1, feather;
+  private Model hatBottom, hatTop1, feather;
   private Model metalBox;
   private Model pole, lamp, platform;
   private Light spotLight, worldLight;
   private SGNode sceneGraphRoot;
+  //transforms for animations
   private TransformNode snowmanSlideTranslate = new TransformNode("translate(x,0,z);", Mat4Transform.translate(0.0f,0.0f,0.0f));
+
   private TransformNode snowmanBaseRotateZ = new TransformNode("base rotate(0,0,rotateZ)", Mat4Transform.rotateAroundZ(0));
   private TransformNode snowmanBaseRotateX = new TransformNode("base rotate(0,0,rotateX)", Mat4Transform.rotateAroundX(0));
   
@@ -117,28 +122,21 @@ public class M01_GLEventListener implements GLEventListener {
     sphere.dispose(gl);
     spotLight.dispose(gl);
     worldLight.dispose(gl);
-    circle1.dispose(gl);
+    hatBottom.dispose(gl);
     hatTop1.dispose(gl);
     feather.dispose(gl);
     metalBox.dispose(gl);
     wall.dispose(gl);
-    // pole.dispose(gl);
-    // lamp.dispose(gl);
-    // polePlatform.displose(gl);
   }
 
   public void initialise(GL3 gl) {
-    createRandomNumbers();
     //Load textures
-    int[] textureId0 = TextureLibrary.loadTexture(gl, "textures/chequerboard.jpg");
     //snow textures from: https://opengameart.org/content/tomeks-seamless-snow-textures
     int[] textureFloor1 = TextureLibrary.loadTexture(gl, "textures/tomek/snow10_d.jpg");
     
     //snow forest texture from: https://www.flickr.com/photos/mesec/44765934870 
     int[] textureWall1 = TextureLibrary.loadTexture(gl, "textures/snowy_forest.jpg");
 
-    int[] textureId3 = TextureLibrary.loadTexture(gl, "textures/jade.jpg");
-    int[] textureId4 = TextureLibrary.loadTexture(gl, "textures/jade_specular.jpg");
     //snow textures from: https://opengameart.org/content/tomeks-seamless-snow-textures 
     int[] textureSnow1 = TextureLibrary.loadTexture(gl, "textures/tomek/snow7_d.jpg");
     int[] textureSnow1Specular = TextureLibrary.loadTexture(gl, "textures/tomek/snow7_s.jpg");
@@ -155,10 +153,11 @@ public class M01_GLEventListener implements GLEventListener {
 
     //hat texture from https://opengameart.org/content/fabric-green-towel-seamless-texture-with-normalmap 
     int[] textureHat1 = TextureLibrary.loadTexture(gl, "textures/GreenTowel_S.jpg"); 
-    //setup spotLight
+    //setup spotlight (turing light around the snowman, taken from tutorials)
     spotLight = new Light(gl);
     spotLight.setCamera(camera);
-    
+
+    //world light setup 
     worldLight = new Light(gl);
     worldLight.setCamera(camera);
     worldLight.setPosition(new Vec3(5.6f, 9f, 8f));
@@ -191,12 +190,13 @@ public class M01_GLEventListener implements GLEventListener {
 
     button = new Model(gl, camera, spotLight, worldLight, shader, material, modelMatrix, mesh, textureCoal1);
     nose = new Model(gl, camera, spotLight, worldLight, shader, material, modelMatrix, mesh, textureWood1);
+    //use mud texture that is mixded with the snow
     sphere = new Model(gl, camera, spotLight, worldLight, shader, material, modelMatrix, mesh, textureSnow1, textureMud1, textureSnow1Specular);
 
     
     //create hat
     material = new Material(new Vec3(1.0f, 0.5f, 0.31f), new Vec3(1.0f, 0.5f, 0.31f), new Vec3(0.3f, 0.3f, 0.3f), 60.0f);
-    circle1 = new Model(gl, camera, spotLight, worldLight, shader, material, modelMatrix, mesh, textureHat1);
+    hatBottom = new Model(gl, camera, spotLight, worldLight, shader, material, modelMatrix, mesh, textureHat1);
     hatTop1 = new Model(gl, camera, spotLight, worldLight, shader, material, modelMatrix, mesh, textureHat1);
     feather = new Model(gl, camera, spotLight, worldLight, shader, material, modelMatrix, mesh, textureHat1);
 
@@ -205,7 +205,7 @@ public class M01_GLEventListener implements GLEventListener {
     mesh = new Mesh(gl, Cube.vertices.clone(), Cube.indices.clone());
     metalBox = new Model(gl, camera, spotLight, worldLight, shader, material, modelMatrix, mesh, textureMetal1, textureMetal1Specular);
     
-    //create spotlight 
+    //create spotlight objects 
     material = new Material(new Vec3(1.0f, 0.5f, 0.31f), new Vec3(1.0f, 0.5f, 0.31f), new Vec3(0.5f, 0.5f, 0.5f), 50.0f);
 
     mesh = new Mesh(gl, Cube.vertices.clone(), Cube.indices.clone());
@@ -215,29 +215,25 @@ public class M01_GLEventListener implements GLEventListener {
     pole = new Model(gl, camera, spotLight, worldLight, shader, material, modelMatrix, mesh, textureMetal1, textureMetal1Specular);
     lamp = new Model(gl, camera, spotLight, worldLight, shader, material, modelMatrix, mesh, textureMetal1, textureMetal1Specular);
     
-     
 
-    // no texture version
-    // sphere = new Model(gl, camera, spotLight, shader, material, modelMatrix, mesh);
-
-    //create snowman scene graph
+    //create snowman scene graph. Translation node descriptions are read from right to left
     sceneGraphRoot = new NameNode("Scene graph: snowman");
-
+    //snowman body -----------------------------------
     NameNode base = new NameNode("base");
       Mat4 m = Mat4Transform.scale(3,3,3);
       m = Mat4.multiply(Mat4Transform.translate(0,1.5f,0.0f), m);
-      TransformNode baseTransform = new TransformNode("scale(3,3,3); translate(0,0.5,0)", m);
+      TransformNode baseTransform = new TransformNode("translate(0,1.5f,0.0f); scale(3,3,3); ", m);
 
       ModelNode baseShape = new ModelNode("base (sphere)", sphere);
 
     NameNode head = new NameNode("head");
       m = Mat4Transform.scale(2.5f,2.5f,2.5f);
       m = Mat4.multiply(Mat4Transform.translate(0.0f,3.8f,0.0f), m);
-      TransformNode headTransform = new TransformNode("scale(2.62f,2.62f,2.62f); translate(0.0f,1.5f,0.0f);", m);
+      TransformNode headTransform = new TransformNode("translate(0.0f,3.8f,0.0f); scale(2.5f,2.5f,2.5f);", m);
 
       ModelNode headShape = new ModelNode("head (sphere)", sphere);
 
-    
+    //buttons -----------------------------------
     NameNode buttons = new NameNode("buttons");
 
     NameNode bottomButton = new NameNode("bottom button");
@@ -245,24 +241,26 @@ public class M01_GLEventListener implements GLEventListener {
       //1. scale and move all buttons to the bottom button position
       m = Mat4Transform.scale(scale,scale,scale);
       m = Mat4.multiply(Mat4Transform.translate(0.0f,1.2f,1.5f), m);
-      TransformNode initialButtonTransfom = new TransformNode("scale(1.1f, 1.1f, 1.1f); translate(0.0f,1.8f,0.9f);", m);
+      TransformNode initialButtonTransfom = new TransformNode("translate(0.0f,1.8f,0.9f); scale(0.25f, 0.25f, 0.25f);", m);
 
       ModelNode bottomButtonShape = new ModelNode("bottom button (sphere)", button);
 
     NameNode middleButton = new NameNode("middle button");
-      //2. move reamining button relative to the bottom one
+      //2. move middle button relative to the bottom one
       m = Mat4Transform.translate(0.0f, 2f, -0.01f);
-      TransformNode middleButtonTransform = new TransformNode("translate(0.0f, 0.3f, 0.0f);", m);
+      TransformNode middleButtonTransform = new TransformNode("translate(0.0f, 2f, -0.01f);", m);
 
-      ModelNode middleButtonShape = new ModelNode("middle button (sphere - button)", button);
+      ModelNode middleButtonShape = new ModelNode("middle button (sphere)", button);
     
     NameNode topButton = new NameNode("top button");
       //3. move top button relative to the middle one
       m = Mat4Transform.translate(0.0f, 1.8f, -0.2f);
-      TransformNode topButtonTransform = new TransformNode("translate(0.0f, 0.3f, 0.0f);", m);
+      TransformNode topButtonTransform = new TransformNode("translate(0.0f, 1.8f, -0.2f);", m);
 
-      ModelNode topButtonShape = new ModelNode("top button (sphere - button)", button);
+      ModelNode topButtonShape = new ModelNode("top button (sphere)", button);
 
+    //eyes -----------------------------------
+    //common variables for both eyes
     NameNode eyes = new NameNode("eyes");
     float scaleEye = 0.3f;
     float eyeDistance = 0.35f;
@@ -272,51 +270,50 @@ public class M01_GLEventListener implements GLEventListener {
     NameNode leftEye = new NameNode("left eye");
       m =  Mat4Transform.scale(scaleEye,scaleEye,scaleEye);
       m = Mat4.multiply(Mat4Transform.translate(-eyeDistance, eyeY, eyeZ), m);
-      // mLeftEye = Mat4.multiply(mLeftEye, Mat4Transform.translate(0.0f, 8.5f, 12f));
+      TransformNode leftEyeTransform = new TransformNode("scale(" + scaleEye + ","  + scaleEye + "," + scaleEye + "); translate(0.3f, 4.3f, 1.1f);", m);
 
-      TransformNode leftEyeTransform = new TransformNode("scale(" + scaleEye + ","  + scaleEye + "," + scaleEye + "); translate(-0.6f, 14f, 6f);", m);
-
-      ModelNode leftEyeShape = new ModelNode("left eye (sphere - button)", button);
+      ModelNode leftEyeShape = new ModelNode("left eye (sphere)", button);
 
 
     NameNode rightEye = new NameNode("right eye");
       m =  Mat4Transform.scale(scaleEye,scaleEye,scaleEye);
       m = Mat4.multiply(Mat4Transform.translate(eyeDistance, eyeY, eyeZ), m);
-      // mLeftEye = Mat4.multiply(mLeftEye, Mat4Transform.translate(0.0f, 8.5f, 12f));
+      TransformNode rightEyeTransform = new TransformNode("scale(" + scaleEye + ","  + scaleEye + "," + scaleEye + ");  translate(-0.3f, 4.3f, 1.1f);", m);
 
-      TransformNode rightEyeTransform = new TransformNode("scale(" + scaleEye + ","  + scaleEye + "," + scaleEye + "); translate(0.6f, 14f, 6f);", m);
+      ModelNode rightEyeShape = new ModelNode("right eye (sphere)", button);
 
-      ModelNode rightEyeShape = new ModelNode("right eye (sphere - button)", button);
-
+    //nose -----------------------------------
     NameNode nose0 = new NameNode("nose0");
       m = Mat4Transform.scale(0.2f, 0.2f, 0.6f);
       m = Mat4.multiply(Mat4Transform.translate(0.0f, 4f, 1.35f), m);
 
-      TransformNode nose0Transform = new TransformNode("scale(0.3f, 0.3f, 0.5f); translate(0.0f, 4f, 1f);", m);
-      ModelNode nose0Shape = new ModelNode("nose0 (sphere - nose)", nose);
+      TransformNode nose0Transform = new TransformNode("translate(0.0f, 4f, 1.35f); scale(0.2f, 0.2f, 0.6f);", m);
+      ModelNode nose0Shape = new ModelNode("nose0 (sphere)", nose);
 
+    //mouth - same shape model as nose
     NameNode mouth = new NameNode("mouth");
       m = Mat4Transform.scale(0.6f, 0.2f, 0.2f);
       m = Mat4.multiply(Mat4Transform.translate(0.0f, 3.5f, 1.2f), m);
 
-      TransformNode mouthTransform = new TransformNode("scale(0.3f, 0.3f, 0.5f); translate(0.0f, 4f, 1f);", m);
-      ModelNode mouthShape = new ModelNode("mouth (sphere - mouth)", nose);
+      TransformNode mouthTransform = new TransformNode("translate(0.0f, 3.5f, 1.2f); scale(0.6f, 0.2f, 0.2f);", m);
+      ModelNode mouthShape = new ModelNode("mouth (sphere)", nose);
 
     //hat Nodes -----------------------------------
     TransformNode hatInitialTransfrom = new TransformNode("translate(0.0f,5f, 0.0f)", Mat4Transform.translate(0.0f, 5f, 0.0f));
 
-    NameNode hatCircle1 = new NameNode("hatCircle1");
+    NameNode hatBottomName = new NameNode("hat bottom");
       m = Mat4Transform.scale(2f,0.5f,2f);
-      TransformNode hatCircle1Transform = new TransformNode("scale(2f,0.5f,2f);;", m);
-      ModelNode hatCircle1Shape = new ModelNode("base hat (sphere - circle1)", circle1);
+      TransformNode hatCircle1Transform = new TransformNode("scale(2f,0.5f,2f);", m);
+      ModelNode hatCircle1Shape = new ModelNode("base hat (sphere)", hatBottom);
 
     NameNode hatTop = new NameNode("hatTop");
       m = Mat4Transform.scale(1.4f,1.4f,1.4f);
       m = Mat4.multiply(Mat4Transform.translate(0.0f, 0.2f, 0.0f), m);
-      TransformNode hatTopTransform = new TransformNode("translate(0.0f, 0.2f, 0.0f); scale(1.2f,1.2f,1.2f);", m);
+      TransformNode hatTopTransform = new TransformNode("translate(0.0f, 0.2f, 0.0f); scale(1.4f,1.4f,1.4f);", m);
       ModelNode hatTopShape = new ModelNode("hat top (sphere)", hatTop1);
 
-      //feather initial transform ---------------------------------
+      //feathers
+      //transform for both feahters ---------------------------------
       Mat4 featherM = Mat4Transform.scale(0.3f,0.8f,0.1f);
       featherM = Mat4.multiply(Mat4Transform.rotateAroundY(90), featherM);
       featherM = Mat4.multiply(Mat4Transform.rotateAroundX(-45), featherM);
@@ -336,21 +333,21 @@ public class M01_GLEventListener implements GLEventListener {
     NameNode box = new NameNode("metal box");
       m = Mat4Transform.scale(1f, 3.5f, 1f);
       m = Mat4.multiply(Mat4Transform.translate(2.5f, 1.75f, 3.5f), m);
-      TransformNode boxTransform = new TransformNode("translate(1.5f, 0.0f, 1.5f); scale(1f, 3.5f, 1f);", m );
+      TransformNode boxTransform = new TransformNode("scale(1f, 3.5f, 1f); translate(2.5f, 1.75f, 3.5f);", m );
       ModelNode boxShape = new ModelNode("metal box (cube)", metalBox);
 
     
-    //spotlight ---------------------------------------
-    //intial translate matrix to position both elements at the same spot
+    //spotlight structure ---------------------------------------
+    //intial translate matrix to position both elements at an initial spot
     NameNode spotlight = new NameNode("spotlight");
     m = Mat4Transform.translate(-3.5f, 0.0f, 3.5f);
-    TransformNode spotlightTranslate = new TransformNode("translate(-3.5f, 3f, 2.8f);", m);
+    TransformNode spotlightTranslate = new TransformNode("translate(-3.5f, 0.0f, 3.5f);", m);
 
-    //pole platform
+    //pole platform 
 
     NameNode spotlightPlatform = new NameNode("spotlight platform");
       m = Mat4Transform.scale(1.4f, 0.3f, 1.4f);
-      TransformNode platformScale = new TransformNode("scale(1.8f, 0.2f, 1.8f);", m);
+      TransformNode platformScale = new TransformNode("scale(1.4f, 0.3f, 1.4f);", m);
       ModelNode platformShape = new ModelNode("spotlight platform (cube)", platform);
 
     //pole
@@ -358,31 +355,16 @@ public class M01_GLEventListener implements GLEventListener {
 
     NameNode spotlightPole = new NameNode("spotlight pole");
       m = Mat4Transform.scale(0.5f, 10f, 0.5f);
-      TransformNode poleScale = new TransformNode("scale(0.5f, 6f, 0.5f);", m);
+      TransformNode poleScale = new TransformNode("scale(0.5f, 10f, 0.5f);", m);
       ModelNode poleShape = new ModelNode("spotlight pole (sphere)", pole);
 
+    //lamp
     NameNode spotlightLamp = new NameNode("spotlight lamp");
       m = Mat4Transform.scale(0.4f, 1.7f, 0.4f);
       m = Mat4.multiply(Mat4Transform.rotateAroundZ(-120), m);
       m = Mat4.multiply(Mat4Transform.translate(0.3f, 4.8f, 0.0f), m);
-      TransformNode lampTransform = new TransformNode("translate(0.0f, 14f, 0.0f); rotateAroundZ(-120); scale(0.3f, 1.5f, 0.3f);", m);
+      TransformNode lampTransform = new TransformNode("translate(0.3f, 4.8f, 0.0f); rotateAroundZ(-120); scale(0.4f, 1.7f, 0.4f);", m);
       ModelNode lampShape = new ModelNode("spotlight lamp (sphere)", lamp);
-
-    sceneGraphRoot.addChild(spotlight);
-      spotlight.addChild(spotlightTranslate);
-        spotlightTranslate.addChild(spotlightPlatform);
-          spotlightPlatform.addChild(platformScale);
-            platformScale.addChild(platformShape);
-
-        
-        spotlightTranslate.addChild(poleTranslate);
-          poleTranslate.addChild(spotlightPole);
-            spotlightPole.addChild(poleScale);
-              poleScale.addChild(poleShape);
-
-          poleTranslate.addChild(spotlightLamp);
-          spotlightLamp.addChild(lampTransform);
-            lampTransform.addChild(lampShape);
 
     
 
@@ -423,10 +405,10 @@ public class M01_GLEventListener implements GLEventListener {
             mouthTransform.addChild(mouthShape);
 
         head.addChild(hatInitialTransfrom); //used to set same starting position for all the elements
-        hatInitialTransfrom.addChild(hatCircle1);
-          hatCircle1.addChild(hatCircle1Transform);
+        hatInitialTransfrom.addChild(hatBottomName );
+          hatBottomName .addChild(hatCircle1Transform);
             hatCircle1Transform.addChild(hatCircle1Shape);
-          hatCircle1.addChild(hatTop);
+          hatBottomName .addChild(hatTop);
             hatTop.addChild(hatTopTransform);
               hatTopTransform.addChild(hatTopShape);
 
@@ -439,13 +421,13 @@ public class M01_GLEventListener implements GLEventListener {
                 featherLeftTransform.addChild(featherLeftShape);
 
       base.addChild(buttons);
-      buttons.addChild(initialButtonTransfom);
+      buttons.addChild(initialButtonTransfom); //set all buttons at the same starting point
         initialButtonTransfom.addChild(bottomButton);
           bottomButton.addChild(bottomButtonShape);
-        initialButtonTransfom.addChild(middleButtonTransform);
+        initialButtonTransfom.addChild(middleButtonTransform); //move buttons up
           middleButtonTransform.addChild(middleButton);
             middleButton.addChild(middleButtonShape);
-          middleButtonTransform.addChild(topButtonTransform);
+          middleButtonTransform.addChild(topButtonTransform); //final position for the top button
             topButtonTransform.addChild(topButton);
               topButton.addChild(topButtonShape);
 
@@ -453,23 +435,33 @@ public class M01_GLEventListener implements GLEventListener {
         box.addChild(boxTransform);
           boxTransform.addChild(boxShape);
 
+    sceneGraphRoot.addChild(spotlight);
+    spotlight.addChild(spotlightTranslate);
+      spotlightTranslate.addChild(spotlightPlatform);
+        spotlightPlatform.addChild(platformScale);
+          platformScale.addChild(platformShape);
 
-    
-    
+      
+      spotlightTranslate.addChild(poleTranslate);
+        poleTranslate.addChild(spotlightPole);
+          spotlightPole.addChild(poleScale);
+            poleScale.addChild(poleShape);
+
+        poleTranslate.addChild(spotlightLamp);
+        spotlightLamp.addChild(lampTransform);
+          lampTransform.addChild(lampShape);
 
 
     sceneGraphRoot.update();
 
     sceneGraphRoot.print(0,false);
 
-
   }
 
 
   private void render(GL3 gl) {
     gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
-
-    spotLight.setPosition(getLightPosition());  // changing spotLight position each frame
+    if(animateLight) spotLight.setPosition(getLightPosition());  // changing spotLight position each frame
     spotLight.render(gl);
     worldLight.render(gl);
     floor.render(gl);
@@ -510,9 +502,13 @@ public class M01_GLEventListener implements GLEventListener {
     snowmanSlideTranslate.setTransform(Mat4Transform.translate(snowmanXPos, 0.0f, 0.0f));
     snowmanSlideTranslate.update();
   }
+
+  //variables that change the snowman's base (body) position
   private float rotateZ = 0;
   private float rotateX = 0;
+
   private final static int ROTATE_BASE_MAX = 25;
+  //for toggling sin function sign when rotateX/Z >= ROTATE_BASE_MAX
   private int signZ = 1;
   private int signX = 1;
   private void rockSnowman(){
@@ -533,9 +529,13 @@ public class M01_GLEventListener implements GLEventListener {
     snowmanBaseRotateZ.update();
 
   }
+
+  
+  //variables that change the snowman's head (body) position
   private float rotateHeadZ = 0;
   private float rotateHeadX = 0;
   private final static int ROTATE_HEAD_MAX = 10;
+    //for toggling sin function sign when rotateX/Z >= ROTATE_HEAD_MAX
   private int signHeadZ = 1;
   private int signHeadX = 1;
 
