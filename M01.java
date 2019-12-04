@@ -43,19 +43,17 @@ public class M01 extends JFrame implements ActionListener {
     menuBar.add(fileMenu);
     
     JPanel p = new JPanel();
-      JButton b = new JButton("start");
-      b.addActionListener(this);
-      p.add(b);
-      b = new JButton("stop");
-      b.addActionListener(this);
-      p.add(b);
-      b = new JButton("slide");
+      
+      JButton b = new JButton("slide");
       b.addActionListener(this);
       p.add(b);
       b = new JButton("rock");
       b.addActionListener(this);
       p.add(b);
       b = new JButton("roll");
+      b.addActionListener(this);
+      p.add(b);
+      b = new JButton("slide, rock & roll");
       b.addActionListener(this);
       p.add(b);
       b = new JButton("reset snowman");
@@ -78,19 +76,18 @@ public class M01 extends JFrame implements ActionListener {
 
 
   public void actionPerformed(ActionEvent e) {
-    if (e.getActionCommand().equalsIgnoreCase("start")) {
-      this.glEventListener.startAnimation();
-    }
-    else if (e.getActionCommand().equalsIgnoreCase("stop")) {
-      this.glEventListener.stopAnimation();
-    }
-    else if (e.getActionCommand().equalsIgnoreCase("slide")) {
+    if (e.getActionCommand().equalsIgnoreCase("slide")) {
       this.glEventListener.animateSlide = !this.glEventListener.animateSlide;
     }
     else if (e.getActionCommand().equalsIgnoreCase("rock")) {
       this.glEventListener.animateRock = !this.glEventListener.animateRock;
     }
     else if (e.getActionCommand().equalsIgnoreCase("roll")) {
+      this.glEventListener.animateRoll = !this.glEventListener.animateRoll;
+    }
+    else if (e.getActionCommand().equalsIgnoreCase("slide, rock & roll")) {
+      this.glEventListener.animateSlide = !this.glEventListener.animateSlide;
+      this.glEventListener.animateRock = !this.glEventListener.animateRock;
       this.glEventListener.animateRoll = !this.glEventListener.animateRoll;
     }
     else if (e.getActionCommand().equalsIgnoreCase("reset snowman")) {
