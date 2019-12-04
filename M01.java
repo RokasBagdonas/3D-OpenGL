@@ -49,6 +49,15 @@ public class M01 extends JFrame implements ActionListener {
       b = new JButton("stop");
       b.addActionListener(this);
       p.add(b);
+      b = new JButton("slide");
+      b.addActionListener(this);
+      p.add(b);
+      b = new JButton("rock");
+      b.addActionListener(this);
+      p.add(b);
+      b = new JButton("roll");
+      b.addActionListener(this);
+      p.add(b);
       
     this.add(p, BorderLayout.SOUTH);
     addWindowListener(new WindowAdapter() {
@@ -71,6 +80,15 @@ public class M01 extends JFrame implements ActionListener {
     }
     else if (e.getActionCommand().equalsIgnoreCase("stop")) {
       this.glEventListener.stopAnimation();
+    }
+    else if (e.getActionCommand().equalsIgnoreCase("slide")) {
+      this.glEventListener.animateSlide = !this.glEventListener.animateSlide;
+    }
+    else if (e.getActionCommand().equalsIgnoreCase("rock")) {
+      this.glEventListener.animateRock = !this.glEventListener.animateRock;
+    }
+    else if (e.getActionCommand().equalsIgnoreCase("roll")) {
+      this.glEventListener.animateRoll = !this.glEventListener.animateRoll;
     }
     else if(e.getActionCommand().equalsIgnoreCase("quit"))
       System.exit(0);

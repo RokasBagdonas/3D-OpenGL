@@ -65,9 +65,9 @@ public class M01_GLEventListener implements GLEventListener {
   //Interaction **************************************
   private boolean animation = false;
   private double savedTime = 0;
-  private boolean animateSlide = false;
-  private boolean animateRock = false;
-  private boolean animateRoll = false;
+  public boolean animateSlide = false;
+  public boolean animateRock = false;
+  public boolean animateRoll = false;
   private float snowmanXPos = 0.0f;
   private float snowmanZPos = 0.0f;
 
