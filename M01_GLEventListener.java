@@ -130,6 +130,8 @@ public class M01_GLEventListener implements GLEventListener {
     createRandomNumbers();
     //Load textures
     int[] textureId0 = TextureLibrary.loadTexture(gl, "textures/chequerboard.jpg");
+    //snow textures from: https://opengameart.org/content/tomeks-seamless-snow-textures
+    int[] textureFloor1 = TextureLibrary.loadTexture(gl, "textures/tomek/snow10_d.jpg");
     int[] textureId3 = TextureLibrary.loadTexture(gl, "textures/jade.jpg");
     int[] textureId4 = TextureLibrary.loadTexture(gl, "textures/jade_specular.jpg");
     //snow textures from: https://opengameart.org/content/tomeks-seamless-snow-textures 
@@ -161,9 +163,9 @@ public class M01_GLEventListener implements GLEventListener {
     //create floor
     Mesh mesh = new Mesh(gl, TwoTriangles.vertices.clone(), TwoTriangles.indices.clone());
     Shader shader = new Shader(gl, "vs_tt_05.txt", "fs_tt_05.txt");
-    Material material = new Material(new Vec3(0.0f, 0.5f, 0.81f), new Vec3(0.0f, 0.5f, 0.81f), new Vec3(0.3f, 0.3f, 0.3f), 32.0f);
+    Material material = new Material(new Vec3(1.0f, 1f, 1f), new Vec3(1.0f, 1f, 1f), new Vec3(0.1f, 0.1f, 0.1f), 60.0f);
     Mat4 modelMatrix = Mat4Transform.scale(16,1f,16);
-    floor = new Model(gl, camera, spotLight, worldLight, shader, material, modelMatrix, mesh, textureId0, textureMud1, textureSnow1Specular);
+    floor = new Model(gl, camera, spotLight, worldLight, shader, material, modelMatrix, mesh, textureFloor1);
 
     //create snowman model
     mesh = new Mesh(gl, Sphere.vertices.clone(), Sphere.indices.clone());
@@ -173,8 +175,8 @@ public class M01_GLEventListener implements GLEventListener {
 
     sphere = new Model(gl, camera, spotLight, worldLight, shader, material, modelMatrix, mesh, textureSnow1, textureMud1, textureSnow1Specular);
 
-    button = new Model(gl, camera, spotLight, worldLight, shader, material, modelMatrix, mesh, textureCoal1, textureSnow1Specular);
-    nose = new Model(gl, camera, spotLight, worldLight, shader, material, modelMatrix, mesh, textureWood1, textureSnow1Specular);
+    button = new Model(gl, camera, spotLight, worldLight, shader, material, modelMatrix, mesh, textureCoal1);
+    nose = new Model(gl, camera, spotLight, worldLight, shader, material, modelMatrix, mesh, textureWood1);
     
     //create hat
     material = new Material(new Vec3(1.0f, 0.5f, 0.31f), new Vec3(1.0f, 0.5f, 0.31f), new Vec3(0.3f, 0.3f, 0.3f), 60.0f);
@@ -451,7 +453,7 @@ public class M01_GLEventListener implements GLEventListener {
   private void render(GL3 gl) {
     gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
 
-    // spotLight.setPosition(getLightPosition());  // changing spotLight position each frame
+    spotLight.setPosition(getLightPosition());  // changing spotLight position each frame
     spotLight.render(gl);
     worldLight.render(gl);
     floor.render(gl);
