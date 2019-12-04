@@ -58,6 +58,9 @@ public class M01 extends JFrame implements ActionListener {
       b = new JButton("roll");
       b.addActionListener(this);
       p.add(b);
+      b = new JButton("reset snowman");
+      b.addActionListener(this);
+      p.add(b);
       
     this.add(p, BorderLayout.SOUTH);
     addWindowListener(new WindowAdapter() {
@@ -89,6 +92,9 @@ public class M01 extends JFrame implements ActionListener {
     }
     else if (e.getActionCommand().equalsIgnoreCase("roll")) {
       this.glEventListener.animateRoll = !this.glEventListener.animateRoll;
+    }
+    else if (e.getActionCommand().equalsIgnoreCase("reset snowman")) {
+      this.glEventListener.resetSnowman();
     }
     else if(e.getActionCommand().equalsIgnoreCase("quit"))
       System.exit(0);

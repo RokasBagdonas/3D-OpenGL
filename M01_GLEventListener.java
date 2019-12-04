@@ -556,6 +556,23 @@ public class M01_GLEventListener implements GLEventListener {
     snowmanHeadRotateZ.update();
     
   }
+
+  public void resetSnowman(){
+    animateSlide = false; animateRoll = false; animateRock = false;
+  snowmanSlideTranslate.setTransform(Mat4Transform.translate(0.0f,0.0f,0.0f));
+  snowmanSlideTranslate.update();
+
+  snowmanBaseRotateZ.setTransform(Mat4Transform.rotateAroundZ(0));
+  snowmanBaseRotateX.setTransform(Mat4Transform.rotateAroundX(0));
+  snowmanBaseRotateX.update();
+  snowmanBaseRotateZ.update();
+  snowmanHeadRotateZ.setTransform(Mat4Transform.rotateAroundZ(0));
+  snowmanHeadRotateX.setTransform(Mat4Transform.rotateAroundX(0));
+  snowmanHeadRotateX.update();
+  snowmanHeadRotateZ.update();
+  }
+
+
     // ***************************************************
   /* TIME
    */
