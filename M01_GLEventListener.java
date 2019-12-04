@@ -147,6 +147,9 @@ public class M01_GLEventListener implements GLEventListener {
     // https://opengameart.org/content/metalstone-textures 
     int[] textureMetal1 = TextureLibrary.loadTexture(gl, "textures/mtl_wall01_c.jpg");
     int[] textureMetal1Specular = TextureLibrary.loadTexture(gl, "textures/mtl_wall01_s.jpg");
+
+    //hat texture from https://opengameart.org/content/fabric-green-towel-seamless-texture-with-normalmap 
+    int[] textureHat1 = TextureLibrary.loadTexture(gl, "textures/GreenTowel_S.jpg"); 
     //setup spotLight
     spotLight = new Light(gl);
     spotLight.setCamera(camera);
@@ -180,9 +183,9 @@ public class M01_GLEventListener implements GLEventListener {
     
     //create hat
     material = new Material(new Vec3(1.0f, 0.5f, 0.31f), new Vec3(1.0f, 0.5f, 0.31f), new Vec3(0.3f, 0.3f, 0.3f), 60.0f);
-    circle1 = new Model(gl, camera, spotLight, worldLight, shader, material, modelMatrix, mesh, textureId3, textureId4);
-    hatTop1 = new Model(gl, camera, spotLight, worldLight, shader, material, modelMatrix, mesh, textureId3, textureId4);
-    feather = new Model(gl, camera, spotLight, worldLight, shader, material, modelMatrix, mesh, textureId3, textureId4);
+    circle1 = new Model(gl, camera, spotLight, worldLight, shader, material, modelMatrix, mesh, textureHat1);
+    hatTop1 = new Model(gl, camera, spotLight, worldLight, shader, material, modelMatrix, mesh, textureHat1);
+    feather = new Model(gl, camera, spotLight, worldLight, shader, material, modelMatrix, mesh, textureHat1);
 
     //create metal box
     material = new Material(new Vec3(1.0f, 0.5f, 0.31f), new Vec3(1.0f, 0.5f, 0.31f), new Vec3(1f, 1f, 1f), 4.0f);
