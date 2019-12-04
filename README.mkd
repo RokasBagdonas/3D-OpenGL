@@ -11,3 +11,5 @@ javac Main.java && java Main
  
 
 
+# Note: it is assumed that jogl environmnent is setup
+To run the application, either run "run.bat" or open cmd in the root folder and type "javac Main.java && java Main"
