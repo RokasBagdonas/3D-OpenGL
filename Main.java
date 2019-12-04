@@ -7,7 +7,7 @@ import com.jogamp.opengl.awt.GLCanvas;
 import com.jogamp.opengl.util.FPSAnimator;
 /**
  * Rokas Bagdonas rbagdonas1@sheffield.ac.uk
- * I have used the code form M0X tutorials and built on top.
+ * I have used the code form M0X tutorials.
  */
 
 public class Main extends JFrame implements ActionListener {

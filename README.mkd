@@ -1,42 +1,7 @@
-# Third year Computer Graphics university assignment
+COM3503 3D Computer Graphics: Assignment
 
-The task is to use OpenGL for redering and animating a snowman.
-
-## Hierarchical model of the snowman
-
-### Task 1 - snowman's body - done
-
-Create a snowman from two spheres: head and body; 3 buttons; nose; mounth; eyes.
-
-### Task 2 - snowman's hat - textures left
-
-Model a fedora or a cowboy's hat.
-
-### Task 3 - texture map the snowman - done
-
-1. Apply snow and mud textures to the snowman; reduce specularity
-2. Apply coal texture to buttons;
-3. Apply wood texture to nose;
-4. (extra) apply coal and wood specular maps using Materliase
-
-
-### Task 4 - snowman animations - 80%
-
-TODO: interface controls
-
-### Task 5 - Metal object near the snowman - pending
-
-1. Have 
-
-### Task 6 - Spotlight - pending
-
-
-### Task 7 - Background texture - pending
-
-
-### Task 8 - floor texture - pending
-
-
+### To run the application:
+javac Main.java && java Main
 
 
 
