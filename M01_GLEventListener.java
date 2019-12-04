@@ -98,7 +98,7 @@ public class M01_GLEventListener implements GLEventListener {
 
   private Camera camera;
   private Mat4 perspective; // ?
-  private Model floor, cube, sphere, button, nose;
+  private Model floor, wall, cube, sphere, button, nose;
   private Model circle1, hatTop1, feather;
   private Model metalBox;
   private Model pole, lamp, platform;
@@ -121,6 +121,7 @@ public class M01_GLEventListener implements GLEventListener {
     hatTop1.dispose(gl);
     feather.dispose(gl);
     metalBox.dispose(gl);
+    wall.dispose(gl);
     // pole.dispose(gl);
     // lamp.dispose(gl);
     // polePlatform.displose(gl);
@@ -132,6 +133,10 @@ public class M01_GLEventListener implements GLEventListener {
     int[] textureId0 = TextureLibrary.loadTexture(gl, "textures/chequerboard.jpg");
     //snow textures from: https://opengameart.org/content/tomeks-seamless-snow-textures
     int[] textureFloor1 = TextureLibrary.loadTexture(gl, "textures/tomek/snow10_d.jpg");
+    
+    //snow forest texture from: https://www.flickr.com/photos/mesec/44765934870 
+    int[] textureWall1 = TextureLibrary.loadTexture(gl, "textures/snowy_forest.jpg");
+
     int[] textureId3 = TextureLibrary.loadTexture(gl, "textures/jade.jpg");
     int[] textureId4 = TextureLibrary.loadTexture(gl, "textures/jade_specular.jpg");
     //snow textures from: https://opengameart.org/content/tomeks-seamless-snow-textures 
@@ -170,16 +175,24 @@ public class M01_GLEventListener implements GLEventListener {
     Mat4 modelMatrix = Mat4Transform.scale(16,1f,16);
     floor = new Model(gl, camera, spotLight, worldLight, shader, material, modelMatrix, mesh, textureFloor1);
 
+    //create background wall
+    Mat4 wallMatrix = Mat4Transform.scale(16,1f,16);
+    wallMatrix = Mat4.multiply(Mat4Transform.rotateAroundX(90), wallMatrix);
+    wallMatrix = Mat4.multiply(Mat4Transform.translate(0.0f,8.0f, -8f), wallMatrix);
+    wall = new Model(gl, camera, spotLight, worldLight, shader, material, wallMatrix, mesh, textureWall1);
+    
+
     //create snowman model
     mesh = new Mesh(gl, Sphere.vertices.clone(), Sphere.indices.clone());
     shader = new Shader(gl, "vs_sphere_04.txt", "fs_sphere_04.txt");
 
     material = new Material(new Vec3(1.0f, 0.5f, 0.31f), new Vec3(1.0f, 0.5f, 0.31f), new Vec3(0.8f, 0.8f, 0.8f), 15.0f);
 
-    sphere = new Model(gl, camera, spotLight, worldLight, shader, material, modelMatrix, mesh, textureSnow1, textureMud1, textureSnow1Specular);
 
     button = new Model(gl, camera, spotLight, worldLight, shader, material, modelMatrix, mesh, textureCoal1);
     nose = new Model(gl, camera, spotLight, worldLight, shader, material, modelMatrix, mesh, textureWood1);
+    sphere = new Model(gl, camera, spotLight, worldLight, shader, material, modelMatrix, mesh, textureSnow1, textureMud1, textureSnow1Specular);
+
     
     //create hat
     material = new Material(new Vec3(1.0f, 0.5f, 0.31f), new Vec3(1.0f, 0.5f, 0.31f), new Vec3(0.3f, 0.3f, 0.3f), 60.0f);
@@ -460,6 +473,7 @@ public class M01_GLEventListener implements GLEventListener {
     spotLight.render(gl);
     worldLight.render(gl);
     floor.render(gl);
+    wall.render(gl);
 
     if (animateSlide) slideSnowman();
     if(animateRock) rockSnowman();
