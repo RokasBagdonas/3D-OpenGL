@@ -49,7 +49,7 @@ vec3 calcLight(Light light, vec3 aNormal, vec3 mixed){
 
 void main() {
   vec3 mixed = vec3(mix(texture(first_texture, aTexCoord),
-                       texture(second_texture, aTexCoord), 0.25f).rgb);
+                       texture(second_texture, aTexCoord), 0.35f).rgb);
 
   vec3 output1 = vec3(0.0f);
   output1 += calcLight(light, aNormal, mixed);

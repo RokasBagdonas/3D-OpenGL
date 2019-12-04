@@ -172,7 +172,7 @@ public class M01_GLEventListener implements GLEventListener {
     Shader shader = new Shader(gl, "vs_tt_05.txt", "fs_tt_05.txt");
     Material material = new Material(new Vec3(0.2f, 0.2f, 0.2f), new Vec3(0.8f, 0.8f, 0.8f), new Vec3(0.1f, 0.1f, 0.1f), 60.0f);
     Mat4 modelMatrix = Mat4Transform.scale(16,1f,16);
-    floor = new Model(gl, camera, spotLight, worldLight, shader, material, modelMatrix, mesh, textureFloor1);
+    floor = new Model(gl, camera, spotLight, worldLight, shader, material, modelMatrix, mesh, textureFloor1, textureMud1);
 
     //create background wall
     Mat4 wallMatrix = Mat4Transform.scale(16,1f,16);
