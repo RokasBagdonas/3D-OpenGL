@@ -335,7 +335,7 @@ public class M01_GLEventListener implements GLEventListener {
     //metal object ----------------------------------
     NameNode box = new NameNode("metal box");
       m = Mat4Transform.scale(1f, 3.5f, 1f);
-      m = Mat4.multiply(Mat4Transform.translate(1.5f, 1.75f, 1.5f), m);
+      m = Mat4.multiply(Mat4Transform.translate(2.5f, 1.75f, 3.5f), m);
       TransformNode boxTransform = new TransformNode("translate(1.5f, 0.0f, 1.5f); scale(1f, 3.5f, 1f);", m );
       ModelNode boxShape = new ModelNode("metal box (cube)", metalBox);
 
@@ -343,7 +343,7 @@ public class M01_GLEventListener implements GLEventListener {
     //spotlight ---------------------------------------
     //intial translate matrix to position both elements at the same spot
     NameNode spotlight = new NameNode("spotlight");
-    m = Mat4Transform.translate(-3.5f, 0.0f, 2.8f);
+    m = Mat4Transform.translate(-3.5f, 0.0f, 3.5f);
     TransformNode spotlightTranslate = new TransformNode("translate(-3.5f, 3f, 2.8f);", m);
 
     //pole platform
@@ -496,13 +496,14 @@ public class M01_GLEventListener implements GLEventListener {
 
   private boolean incX = true;
   private boolean incZ = true;
+  private float SLIDE_DISTANCE = 2.8f;
   private void slideSnowman() {
     if(incX){
-      if(snowmanXPos > 4.0f) incX = false;
+      if(snowmanXPos > SLIDE_DISTANCE) incX = false;
       else snowmanXPos += 0.02f;
     }
     else if(!incX){
-      if(snowmanXPos < -4.0f) incX = true;
+      if(snowmanXPos < -SLIDE_DISTANCE) incX = true;
       else snowmanXPos -= 0.02f;  
     }
 
